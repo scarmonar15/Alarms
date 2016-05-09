@@ -1,0 +1,107 @@
+; Mon May 09 18:01:52 COT 2016
+; 
+;+ (version "3.4.4")
+;+ (build "Build 579")
+
+([addresses] of  %3AJADE-SLOT
+
+	(%3AJADE-UNNAMED-SLOT FALSE))
+
+([AgentAction] of  %3AJADE-CLASS
+
+	(%3AJADE-IGNORE TRUE))
+
+([AID] of  %3AJADE-CLASS
+
+	(%3AJADE-IGNORE TRUE))
+
+([Concept] of  %3AJADE-CLASS
+
+	(%3AJADE-IGNORE TRUE))
+
+([Entrega] of  %3AJADE-CLASS
+
+	(%3AJADE-IGNORE FALSE))
+
+([EntregaCalificada] of  %3AJADE-CLASS
+
+	(%3AJADE-IGNORE FALSE))
+
+([Equipo] of  %3AJADE-CLASS
+
+	(%3AJADE-IGNORE FALSE))
+
+([Estudiante] of  %3AJADE-CLASS
+
+	(%3AJADE-IGNORE FALSE))
+
+([EstudianteDenunciado] of  %3AJADE-CLASS
+
+	(%3AJADE-IGNORE FALSE))
+
+([EstudiantesCalificados] of  %3AJADE-CLASS
+
+	(%3AJADE-IGNORE FALSE))
+
+([EstudiantesDelEquipoAlterado] of  %3AJADE-CLASS
+
+	(%3AJADE-IGNORE FALSE))
+
+([EstudiantesDelProyecto] of  %3AJADE-CLASS
+
+	(%3AJADE-IGNORE FALSE))
+
+([name] of  %3AJADE-SLOT
+
+	(%3AJADE-UNNAMED-SLOT FALSE))
+
+([ObtenerEntregaCalificada] of  %3AJADE-CLASS
+
+	(%3AJADE-IGNORE FALSE))
+
+([ObtenerEstudianteDenunciado] of  %3AJADE-CLASS
+
+	(%3AJADE-IGNORE FALSE))
+
+([ObtenerEstudiantesCalificados] of  %3AJADE-CLASS
+
+	(%3AJADE-IGNORE FALSE))
+
+([ObtenerEstudiantesDelEquipo] of  %3AJADE-CLASS
+
+	(%3AJADE-IGNORE FALSE))
+
+([ObtenerEstudiantesDelProyecto] of  %3AJADE-CLASS
+
+	(%3AJADE-IGNORE FALSE))
+
+([Predicate] of  %3AJADE-CLASS
+
+	(%3AJADE-IGNORE TRUE))
+
+([project+annotation] of  %3APROJECT-ANNOTATION
+
+	(%3ALOCATION "C:\\Users\\johnd\\Documents\\Alarms\\Ontology\\src")
+	(%3AONTOLOGYNAME "Alarms")
+	(%3APACKAGE "org.ibrow.alarmsOntology")
+	(%3ASUPPORT "j2se"))
+
+([Proyecto] of  %3AJADE-CLASS
+
+	(%3AJADE-IGNORE FALSE))
+
+([resolvers] of  %3AJADE-SLOT
+
+	(%3AJADE-UNNAMED-SLOT FALSE))
+
+([SimpleJADEAbstractOntology_00014] of  %3ASTANDARD-FACET
+
+	(%3AASSOCIATED-SLOT [%3AJADE-NAME]))
+
+([SimpleJADEAbstractOntology_00016] of  %3ASTANDARD-FACET
+
+	(%3AASSOCIATED-SLOT [%3AJADE-UNNAMED-SLOT]))
+
+([Tarea] of  %3AJADE-CLASS
+
+	(%3AJADE-IGNORE FALSE))
