@@ -1,4 +1,4 @@
-; Mon May 09 18:01:52 COT 2016
+; Mon May 09 20:42:26 COT 2016
 ; 
 ;+ (version "3.4.4")
 ;+ (build "Build 579")
@@ -81,9 +81,9 @@
 
 ([project+annotation] of  %3APROJECT-ANNOTATION
 
-	(%3ALOCATION "C:\\Users\\johnd\\Documents\\Alarms\\Ontology\\src")
+	(%3ALOCATION "C:\\Users\\johnd\\Documents\\Alarms\\MAS_Alarms\\src")
 	(%3AONTOLOGYNAME "Alarms")
-	(%3APACKAGE "org.ibrow.alarmsOntology")
+	(%3APACKAGE "alarmsOntology")
 	(%3ASUPPORT "j2se"))
 
 ([Proyecto] of  %3AJADE-CLASS
