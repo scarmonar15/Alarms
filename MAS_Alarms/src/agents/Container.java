@@ -44,9 +44,9 @@ public class Container {
             AgentController teac = c.createNewAgent("Profesor", "agents.Teacher", null);
             AgentController team = c.createNewAgent("Equipo", "agents.Team", null);
 
+            stud.start();
             team.start();
             teac.start();
-            team.start();
             
             AgentController pi = c.getAgent("Equipo");
 
