@@ -2,6 +2,7 @@ package agents;
 
 
 import alarmsOntology.*;
+import jade.content.ContentElement;
 import jade.content.lang.Codec;
 import jade.content.lang.sl.SLCodec;
 import jade.content.onto.Ontology;
@@ -14,6 +15,7 @@ import jade.domain.FIPAAgentManagement.DFAgentDescription;
 import jade.domain.FIPAAgentManagement.ServiceDescription;
 import jade.domain.FIPAException;
 import jade.lang.acl.ACLMessage;
+import jade.lang.acl.MessageTemplate;
 import jade.util.leap.ArrayList;
 import jade.util.leap.List;
 import java.io.BufferedReader;
@@ -37,40 +39,73 @@ public class Student extends Agent {
         public EnviarDenunciados(Agent a) {
             super(a);
         }
+        
         public void action(){
-            try{
-                AID r = new AID();
-                r.setLocalName("Profesor");
-                ACLMessage msg = new ACLMessage(ACLMessage.INFORM);
-                msg.setSender(getAID());
-                msg.addReceiver(r);
-                msg.setLanguage(codec.getName());
-                msg.setOntology(ontologia.getName());
-                
-                Equipo eq = new Equipo();
-                eq.setId(3);
-                
-                Estudiante e = new Estudiante();
-                e.setCedula("1020304050");
-                e.setNombre("Carlos");
-                e.setApellido("Bedoya");
-                e.setCorreo("sacarmonar@gmail.com");
-                e.setEquipo(eq);
-     /*           
-                List estudiantes = new ArrayList();
-                estudiantes.add(e);
-                eq.setEstudiantes(estudiantes);*/
-                
-                EstudianteDenunciado ed = new EstudianteDenunciado();
-                ed.setEstudiante(e);
-                getContentManager().fillContent(msg, ed);
-                send(msg);
-                System.out.println("Estudiante denunciado enviado al profesor");
-            }catch(Exception e){
-                System.out.println(e);
-                finished = true;
+            MessageTemplate mt = MessageTemplate.and(
+                MessageTemplate.MatchLanguage(codec.getName()),
+                MessageTemplate.MatchOntology(ontologia.getName()));
+            ACLMessage  msg = blockingReceive(mt);
+
+            try {
+
+                if(msg != null){
+                if(msg.getPerformative() == ACLMessage.NOT_UNDERSTOOD){
+                    System.out.println("Mensaje NOT UNDERSTOOD recibido");
+                }
+                else{
+                    if(msg.getPerformative()== ACLMessage.INFORM){
+                    ContentElement ce = getContentManager().extractContent(msg);
+                    if (ce instanceof ObtenerEstudianteDenunciado){
+                        // Recibido un INFORM con contenido correcto
+                        ACLMessage reply = msg.createReply();
+                        
+                        Equipo eq = new Equipo();
+                        eq.setId(3);
+                        
+                        //Tendría que hacer un REQUEST al API preguntando por este estudiante
+                        Estudiante e = new Estudiante();
+                        ObtenerEstudianteDenunciado predicado = (ObtenerEstudianteDenunciado)ce;
+                        e.setCedula(predicado.getId_estudiante()+"");
+                        e.setNombre("Carlos");
+                        e.setApellido("Bedoya");
+                        e.setCorreo("sacarmonar@gmail.com");
+                        e.setEquipo(eq);
+
+                        EstudianteDenunciado ed = new EstudianteDenunciado();
+                        ed.setEstudiante(e);
+                        getContentManager().fillContent(reply, ed);
+                        send(reply);
+                        System.out.println("Enviando información básica del denunciado al Agente Profesor");
+                    }
+                    else{
+                        // Recibido un INFORM con contenido incorrecto
+                        ACLMessage reply = msg.createReply();
+                        reply.setPerformative(ACLMessage.NOT_UNDERSTOOD);
+                        reply.setContent("( UnexpectedContent (expected ping))");
+                        send(reply);
+                    }
+                }
+                else {
+                    // Recibida una performativa incorrecta
+                    ACLMessage reply = msg.createReply();
+                    reply.setPerformative(ACLMessage.NOT_UNDERSTOOD);
+                    reply.setContent("( (Unexpected-act "+ACLMessage.getPerformative(msg.getPerformative())+")( expected (inform)))");
+                    send(reply);
+                }
             }
-        }
+            }else{
+            //System.out.println("No message received");
+            }
+
+             }
+             catch (jade.content.lang.Codec.CodecException ce) {
+                   System.out.println(ce);
+            }
+            catch (jade.content.onto.OntologyException oe) {
+                System.out.println(oe);
+            } 
+        }    
+        
         public boolean done() {
             return true;
         }

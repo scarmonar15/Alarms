@@ -17,6 +17,8 @@ import jade.content.*;
 import jade.content.lang.*;
 import jade.content.lang.sl.*;
 import jade.content.onto.*;
+import java.io.BufferedReader;
+import java.io.InputStreamReader;
  
 public class Teacher extends Agent {
  
@@ -33,9 +35,6 @@ public class Teacher extends Agent {
       }
  
       public void action() {
- 
-        System.out.println("\nEsperando por estudiantes denunciados...");
-
         MessageTemplate mt = MessageTemplate.and(
                 MessageTemplate.MatchLanguage(codec.getName()),
                 MessageTemplate.MatchOntology(ontologia.getName()));
@@ -53,8 +52,10 @@ public class Teacher extends Agent {
                         // Recibido un INFORM con contenido correcto
                         EstudianteDenunciado ed = (EstudianteDenunciado) ce;
                         Estudiante e = ed.getEstudiante();
-                        System.out.println("Mensaje recibido:");
-                        System.out.println("Soy el profesor, he recibido una queja del estudiante con ID: " + e.getCedula());
+                        System.out.println("Denuncia recibida");
+                        System.out.println("Se ha hecho una denuncia de un estudiante"
+                                + " con cédula: " + e.getCedula() + " llamado " + e.getNombre() + " " + e.getApellido() + " con correo"
+                                + " " + e.getCorreo());
 
                     }
                     else{
@@ -91,13 +92,49 @@ public class Teacher extends Agent {
       }
  
   } //Fin de la clase WaitPingAndReplyBehaviour
- 
-  protected void setup() {
- 
-    getContentManager().registerLanguage(codec);
-    getContentManager().registerOntology(ontologia);
-    WaitPingAndReplyBehaviour PingBehaviour;
-    PingBehaviour = new  WaitPingAndReplyBehaviour(this);
-    addBehaviour(PingBehaviour);
- }
+    class ObtenerAlDenunciado extends SimpleBehaviour{
+        private boolean finished = false;
+        public ObtenerAlDenunciado(Agent a) {
+            super(a);
+        }
+
+        public void action() {
+            try {
+                AID r = new AID();
+                r.setLocalName("Estudiante");
+                ACLMessage msg = new ACLMessage(ACLMessage.INFORM);
+                msg.setSender(getAID());
+                msg.addReceiver(r);
+                msg.setLanguage(codec.getName());
+                msg.setOntology(ontologia.getName());
+                
+                System.out.print("Ingrese cédula del estudiante que quiere denunciar: ");
+                BufferedReader buff = new BufferedReader(new InputStreamReader(System.in));
+                String respuesta = buff.readLine();
+                
+                ObtenerEstudianteDenunciado oed = new ObtenerEstudianteDenunciado();
+                oed.setId_estudiante(Integer.parseInt(respuesta));
+                getContentManager().fillContent(msg, oed);
+                send(msg);
+                System.out.println("\n Hemos registrado su denuncia");
+            } catch (Exception e) {
+                System.out.println(e);
+                finished = true;
+            }
+        }
+
+        public boolean done() {
+            return true;
+        }
+    }
+    protected void setup() {
+        getContentManager().registerLanguage(codec);
+        getContentManager().registerOntology(ontologia);
+        WaitPingAndReplyBehaviour PingBehaviour;
+        ObtenerAlDenunciado SenderBehaviour;
+        SenderBehaviour = new ObtenerAlDenunciado(this);
+        PingBehaviour = new  WaitPingAndReplyBehaviour(this);
+        addBehaviour(SenderBehaviour);
+        addBehaviour(PingBehaviour);
+    }
 }
