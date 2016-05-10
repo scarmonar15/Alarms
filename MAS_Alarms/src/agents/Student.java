@@ -76,6 +76,22 @@ public class Student extends Agent {
                         getContentManager().fillContent(reply, ed);
                         send(reply);
                         System.out.println("Enviando información básica del denunciado al Agente Profesor");
+                    }else if(ce instanceof ObtenerEstudiantesDelEquipo){
+                        ACLMessage reply = msg.createReply();
+                        
+                        Equipo eq = new Equipo();
+                        ObtenerEstudiantesDelEquipo predicado = (ObtenerEstudiantesDelEquipo)ce;
+                        eq.setId(predicado.getId_equipo());
+                        
+                        
+                        
+                        //Capacidad de desempeño histórico
+                        EstudiantesDelEquipoAlterado edea = new EstudiantesDelEquipoAlterado();
+                        edea.setEstudiantes(eq.getEstudiantes());
+                        getContentManager().fillContent(reply, edea);
+                        //send(reply);
+                        System.out.println("*********** Enviando información histórica de estudiantes");
+                        
                     }
                     else{
                         // Recibido un INFORM con contenido incorrecto
