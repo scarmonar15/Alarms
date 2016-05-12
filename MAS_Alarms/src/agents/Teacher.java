@@ -19,6 +19,8 @@ import jade.content.lang.sl.*;
 import jade.content.onto.*;
 import java.io.BufferedReader;
 import java.io.InputStreamReader;
+import java.net.HttpURLConnection;
+import java.net.URL;
  
 public class Teacher extends Agent {
  
@@ -55,9 +57,7 @@ public class Teacher extends Agent {
                         System.out.println("Denuncia recibida");
                         System.out.println("Se ha hecho una denuncia de un estudiante"
                                 + " con cédula: " + e.getCedula() + " llamado " + e.getNombre() + " " + e.getApellido() + " con correo"
-                                + " " + e.getCorreo());
-
-                    }
+                                + " " + e.getCorreo());                    }
                     else{
                         // Recibido un INFORM con contenido incorrecto
                         ACLMessage reply = msg.createReply();
@@ -94,6 +94,7 @@ public class Teacher extends Agent {
   } //Fin de la clase WaitPingAndReplyBehaviour
     class ObtenerAlDenunciado extends SimpleBehaviour{
         private boolean finished = false;
+        private final String USER_AGENT = "Mozilla/5.0";
         public ObtenerAlDenunciado(Agent a) {
             super(a);
         }
@@ -111,6 +112,30 @@ public class Teacher extends Agent {
                 System.out.print("Ingrese cédula del estudiante que quiere denunciar: ");
                 BufferedReader buff = new BufferedReader(new InputStreamReader(System.in));
                 String respuesta = buff.readLine();
+                
+                String url = "http://alarms-api.herokuapp.com/students/" + respuesta.toString() + ".json";
+		URL obj = new URL(url);
+                HttpURLConnection con = (HttpURLConnection) obj.openConnection();
+		// optional default is GET
+		con.setRequestMethod("GET");
+		//add request header
+		con.setRequestProperty("User-Agent", USER_AGENT);
+		int responseCode = con.getResponseCode();
+                System.out.println("\nSending 'GET' request to URL : " + url);
+                System.out.println("Response Code : " + responseCode);
+                
+                BufferedReader in = new BufferedReader(
+                        new InputStreamReader(con.getInputStream()));
+                String inputLine;
+                StringBuffer response = new StringBuffer();
+
+                while ((inputLine = in.readLine()) != null) {
+                    response.append(inputLine);
+                }
+                in.close();
+
+                //print result
+                System.out.println(response);
                 
                 ObtenerEstudianteDenunciado oed = new ObtenerEstudianteDenunciado();
                 oed.setId_estudiante(Integer.parseInt(respuesta));
@@ -130,11 +155,13 @@ public class Teacher extends Agent {
     protected void setup() {
         getContentManager().registerLanguage(codec);
         getContentManager().registerOntology(ontologia);
-        WaitPingAndReplyBehaviour PingBehaviour;
+        
         ObtenerAlDenunciado SenderBehaviour;
         SenderBehaviour = new ObtenerAlDenunciado(this);
-        PingBehaviour = new  WaitPingAndReplyBehaviour(this);
         addBehaviour(SenderBehaviour);
+        
+        WaitPingAndReplyBehaviour PingBehaviour;
+        PingBehaviour = new  WaitPingAndReplyBehaviour(this);
         addBehaviour(PingBehaviour);
     }
 }
