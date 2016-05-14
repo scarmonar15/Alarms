@@ -1,14 +1,9 @@
 package agents;
 
-import alarmsOntology.AlarmsOntology;
-import jade.content.lang.Codec;
-import jade.content.lang.sl.SLCodec;
-import jade.content.onto.Ontology;
-import jade.core.AID;
 import jade.core.Profile;
 import jade.core.ProfileImpl;
 import jade.core.Runtime;
-import jade.lang.acl.ACLMessage;
+import jade.util.leap.ArrayList;
 import jade.wrapper.AgentController;
 import jade.wrapper.ContainerController;
 import jade.wrapper.ControllerException;
@@ -22,6 +17,10 @@ public class Container {
 
     public static void main(String[] args) throws IOException {
         new Container().crearContenedor();
+        new Container().mainMenu();
+    }
+    
+    public void mainMenu() throws IOException{
         System.out.println("1. Denunciar a un estudiante \n2. Calificar una entrega");
         while (true) {
             BufferedReader buff = new BufferedReader(new InputStreamReader(System.in));
@@ -30,22 +29,39 @@ public class Container {
                 new Container().denunciarEstudiante();
                 break;
             } else if (respuesta.equals("2")) {
-                System.out.println("Has elegido calificar una entrega");
+                new Container().calificarUnaEntrega();
                 break;
             } else {
                 System.out.println("El número seleccionado no se encuentra dentro de las opciones");
             }
         }
     }
-    public void denunciarEstudiante(){
+    public void denunciarEstudiante() throws IOException{
         System.out.println("Has elegido Denunciar a un estudiante");
+        Object object[] = new Object[1];
+        object[0] = new String("Denuncia");
         try{
-            AgentController prof = c.createNewAgent("Profesor2", "agents.Teacher", null);
+            AgentController prof = c.createNewAgent("Profesor2", "agents.Teacher", object);
             prof.start();
         } catch (ControllerException e) {
             // TODO Auto-generated catch block
             e.printStackTrace();
         }
+        mainMenu();
+    }
+    
+    public void calificarUnaEntrega() throws IOException{
+        System.out.println("Has elegido Calificar una Entrega y eres un profesor");
+        try{
+            Object object[] = new Object[1];
+            object[0] =  new String("Calificacion");
+            AgentController prof = c.createNewAgent("Profesor3", "agents.Teacher",object);
+            prof.start();
+        }catch (ControllerException e) {
+            // TODO Auto-generated catch block
+            e.printStackTrace();
+        }
+        mainMenu();
     }
     public void crearContenedor() throws IOException {
         Runtime rt = Runtime.instance();
