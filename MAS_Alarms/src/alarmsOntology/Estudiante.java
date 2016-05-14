@@ -1,9 +1,8 @@
 package alarmsOntology;
 
-
+import com.google.gson.JsonObject;
+import com.google.gson.JsonParser;
 import jade.content.*;
-import jade.util.leap.*;
-import jade.core.*;
 
 /**
 * Protege name: Estudiante
@@ -11,7 +10,17 @@ import jade.core.*;
 * @version 2016/05/9, 22:41:11
 */
 public class Estudiante implements Concept {
-
+    
+    public Estudiante() {}
+    
+    public Estudiante(String json_doc) {
+        JsonObject json_object = new JsonParser().parse(json_doc).getAsJsonObject();
+        
+        setCedula(json_object.get("id").getAsString());
+        setNombre(json_object.get("name").getAsString());
+        setApellido(json_object.get("last_name").getAsString());
+        setCorreo(json_object.get("mail").getAsString());
+    }
    /**
 * Protege name: apellido
    */
