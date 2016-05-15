@@ -96,6 +96,8 @@ public class Teacher extends Agent {
                 }
             } catch (Codec.CodecException | OntologyException e) {
                 System.out.println(e);
+            } catch (IOException ex) {
+                Logger.getLogger(Teacher.class.getName()).log(Level.SEVERE, null, ex);
             }
         }
  
