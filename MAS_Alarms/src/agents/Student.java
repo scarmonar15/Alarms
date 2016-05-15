@@ -7,6 +7,7 @@ import jade.content.lang.sl.SLCodec;
 import jade.content.onto.Ontology;
 import jade.core.Agent;
 import jade.core.behaviours.SimpleBehaviour;
+import jade.core.behaviours.TickerBehaviour;
 import jade.domain.DFService;
 import jade.domain.FIPAAgentManagement.DFAgentDescription;
 import jade.domain.FIPAAgentManagement.ServiceDescription;
@@ -48,10 +49,14 @@ public class Student extends Agent {
 
         getContentManager().registerLanguage(codec);
         getContentManager().registerOntology(ontologia);
+        
+        MirarProyecto tickerProyecto = new MirarProyecto(this, 5000);
+        addBehaviour(tickerProyecto);
 
         EnviarDenunciados EnviarBehaviour = new EnviarDenunciados(this);
         addBehaviour(EnviarBehaviour);
     }
+    
     
     @Override
     protected void takeDown() {
@@ -96,7 +101,16 @@ public class Student extends Agent {
         
         return response.toString();
     }
-
+    
+    class MirarProyecto extends TickerBehaviour{
+        public MirarProyecto(Agent a, long timer){
+            super(a,timer);
+        }
+        public void onTick(){
+            System.out.println("tick");
+        }
+    }
+    
     class EnviarDenunciados extends SimpleBehaviour {
         private boolean finished = false;
         
