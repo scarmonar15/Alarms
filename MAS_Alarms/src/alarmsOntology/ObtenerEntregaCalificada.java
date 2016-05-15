@@ -8,7 +8,7 @@ import jade.core.*;
 /**
 * Protege name: ObtenerEntregaCalificada
 * @author ontology bean generator
-* @version 2016/05/9, 22:41:11
+* @version 2016/05/15, 02:18:59
 */
 public class ObtenerEntregaCalificada implements Predicate {
 
@@ -21,6 +21,17 @@ public class ObtenerEntregaCalificada implements Predicate {
    }
    public int getId_entrega() {
      return this.id_entrega;
+   }
+
+   /**
+* Protege name: nota
+   */
+   private float nota;
+   public void setNota(float value) { 
+    this.nota=value;
+   }
+   public float getNota() {
+     return this.nota;
    }
 
 }

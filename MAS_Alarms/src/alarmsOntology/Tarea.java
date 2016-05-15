@@ -8,7 +8,7 @@ import jade.core.*;
 /**
 * Protege name: Tarea
 * @author ontology bean generator
-* @version 2016/05/9, 22:41:11
+* @version 2016/05/15, 02:18:59
 */
 public class Tarea implements Concept {
 

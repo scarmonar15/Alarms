@@ -8,11 +8,9 @@ import jade.content.*;
 import jade.content.lang.*;
 import jade.content.lang.sl.*;
 import jade.content.onto.*;
-import jade.util.leap.List;
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStreamReader;
-import java.util.ArrayList;
 import java.util.logging.Level;
 import java.util.logging.Logger;
  
@@ -64,17 +62,50 @@ public class Teacher extends Agent {
                                 doDelete();
                                 new Container().mainMenu();
                             }else if(ce instanceof EstudiantesCalificados){
+                                ACLMessage reply = msg.createReply();
+                                
+                                BufferedReader buff = new BufferedReader(new InputStreamReader(System.in));
+                                
+                                System.out.println("Ingrese Entrega que va a calificar");
+                                int entrega = Integer.parseInt(buff.readLine());
+
+                                System.out.println("Ingrese Nota");
+                                float nota = Float.parseFloat(buff.readLine());
+
+                                ObtenerEntregaCalificada oec = new ObtenerEntregaCalificada();
+                                oec.setId_entrega(entrega);
+                                oec.setNota(nota);
+
+                                getContentManager().fillContent(reply, oec);
+                                send(reply);
+
+                                System.out.println("\nHemos registrado su calificación");
+                                
                                 EstudiantesCalificados ec = (EstudiantesCalificados) ce;
-                                //ArrayList estudiantes_calificados = new ArrayList();
+                                
                                 for (int i = 0; i < ec.getEstudiantes().size(); i++) {
                                     Estudiante e = (Estudiante)ec.getEstudiantes().get(i);
                                     System.out.println("Hemos registrado una nueva calificación a nombre"
-                                            + " de " + e.getNombre() + " " + e.getApellido() + " "
-                                            + "en la entrega #{entrega} y obtuvo una nota de #{nota}");
+                                            + " de " + e.getNombre() + " " + e.getApellido()
+                                            + " en la entrega " + entrega
+                                            + " y obtuvo una nota de " + nota
+                                    );
                                 }
+                            } else if(ce instanceof EntregaCalificada) {
+                                System.out.println("fff");
+                                EntregaCalificada ec = (EntregaCalificada) ce;
+                                Entrega e = ec.getEntrega();
+                                
+                                System.out.println("Entrega recibida");
+                                System.out.println("La entrega recibida tiene los siguientes datos:\n"
+                                        + "ID: " + e.getId()
+                                        + "\nFecha: " + e.getFecha()
+                                        + "\nEnunciado: " + e.getEnunciado()
+                                );
+                                
                                 doDelete();
                                 new Container().mainMenu();
-                            } else {
+                            }else {
                                 // Recibido un INFORM con contenido incorrecto
                                 ACLMessage reply = msg.createReply();
 
@@ -128,23 +159,14 @@ public class Teacher extends Agent {
                 System.out.println("Ingrese cédula de estudiantes que quiere calificar (separados por coma)");
                 BufferedReader buff = new BufferedReader(new InputStreamReader(System.in));           
                 String[] grupo_de_estudiantes = buff.readLine().toString().split(",");
-                
-                System.out.println("Ingrese Entrega que va a calificar");
-                int entrega = Integer.parseInt(buff.readLine());
 
-                System.out.println("Ingrese Nota");
-                float nota = Float.parseFloat(buff.readLine());
-                
                 ObtenerEstudiantesCalificados oec = new ObtenerEstudiantesCalificados();
-                for (int i = 0; i < grupo_de_estudiantes.length; i++) {
-                    oec.addId_estudiantes(grupo_de_estudiantes[i]);
+                for (String id_estudiante : grupo_de_estudiantes) {
+                    oec.addId_estudiantes(id_estudiante);
                 }
                 
                 getContentManager().fillContent(msg, oec);
                 send(msg);
-
-                System.out.println("\nHemos registrado su calificación");
-                
             }catch (IOException ex) {
                 Logger.getLogger(Teacher.class.getName()).log(Level.SEVERE, null, ex);
             } catch (Codec.CodecException ex) {

@@ -1,6 +1,8 @@
 package alarmsOntology;
 
 
+import com.google.gson.JsonObject;
+import com.google.gson.JsonParser;
 import jade.content.*;
 import jade.util.leap.*;
 import jade.core.*;
@@ -8,10 +10,19 @@ import jade.core.*;
 /**
 * Protege name: Entrega
 * @author ontology bean generator
-* @version 2016/05/9, 22:41:11
+* @version 2016/05/15, 02:18:59
 */
 public class Entrega implements Concept {
 
+    public Entrega() {}
+    
+    public Entrega(String json_doc) {
+        JsonObject json_object = new JsonParser().parse(json_doc).getAsJsonObject();
+        
+        setId(Integer.parseInt(json_object.get("id").getAsString()));
+        setFecha(json_object.get("limit_date").getAsString());
+        setEnunciado(json_object.get("description").getAsString());
+    }
    /**
 * Protege name: tareas
    */

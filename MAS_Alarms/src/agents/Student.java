@@ -62,8 +62,8 @@ public class Student extends Agent {
         }
     }
     
-    private String requestEstudiante(String id) {
-        String url = "http://alarms-api.herokuapp.com/students/" + id + ".json";
+    private String realizarRequest(String modelo, String id) {
+        String url = "http://alarms-api.herokuapp.com/" + modelo + "/" + id + ".json";
         StringBuilder response = new StringBuilder();
         
         try {
@@ -130,7 +130,7 @@ public class Student extends Agent {
                                 ObtenerEstudianteDenunciado predicado = (ObtenerEstudianteDenunciado) ce;
                                 
                                 String id_estudiante = String.valueOf(predicado.getId_estudiante());
-                                String response = requestEstudiante(id_estudiante);
+                                String response = realizarRequest("students", id_estudiante);
                                 
                                 Estudiante e = new Estudiante(response);
                                 EstudianteDenunciado ed = new EstudianteDenunciado();
@@ -146,17 +146,33 @@ public class Student extends Agent {
                                 ACLMessage reply = msg.createReply();
                                 
                                 ObtenerEstudiantesCalificados predicado = (ObtenerEstudiantesCalificados)ce;
-                                List estudiantes = new ArrayList();
-                                estudiantes = predicado.getId_estudiantes();
+                                List estudiantes =  predicado.getId_estudiantes();
                                 EstudiantesCalificados ec = new EstudiantesCalificados();
+                                
                                 for (int i = 0; i < estudiantes.size(); i++){
-                                    String response = requestEstudiante(estudiantes.get(i).toString());
+                                    String response = realizarRequest("students", estudiantes.get(i).toString());
                                     Estudiante e = new Estudiante(response);
                                     ec.addEstudiantes(e);
                                 }
+                                
                                 getContentManager().fillContent(reply, ec);
                                 send(reply);
+                            } else if (ce instanceof ObtenerEntregaCalificada) {
+                                ACLMessage reply = msg.createReply();
                                 
+                                ObtenerEntregaCalificada predicado = (ObtenerEntregaCalificada) ce;
+                                
+                                //Request
+                                String response = realizarRequest("assignments", String.valueOf(predicado.getId_entrega()));
+                                
+                                EntregaCalificada ec = new EntregaCalificada();
+                                Entrega e = new Entrega(response);
+                                
+                                ec.setEntrega(e);
+                                ec.setNota(predicado.getNota());
+                                
+                                getContentManager().fillContent(reply, ec);
+                                send(reply);
                             } else {
                                 // Recibido un INFORM con contenido incorrecto
                                 ACLMessage reply = msg.createReply();
