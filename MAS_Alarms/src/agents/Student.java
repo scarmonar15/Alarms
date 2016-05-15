@@ -13,10 +13,13 @@ import jade.domain.FIPAAgentManagement.ServiceDescription;
 import jade.domain.FIPAException;
 import jade.lang.acl.ACLMessage;
 import jade.lang.acl.MessageTemplate;
+import jade.util.leap.ArrayList;
+import jade.util.leap.List;
 import java.io.BufferedReader;
 import java.io.InputStreamReader;
 import java.net.HttpURLConnection;
 import java.net.URL;
+import static javax.management.Query.eq;
 
 public class Student extends Agent {
 
@@ -132,27 +135,27 @@ public class Student extends Agent {
                                 Estudiante e = new Estudiante(response);
                                 EstudianteDenunciado ed = new EstudianteDenunciado();
                                 
-                                ed.setEstudiante(e);System.out.println(ed.getEstudiante().getApellido());
+                                ed.setEstudiante(e);
+                                //System.out.println(ed.getEstudiante().getApellido());
 
                                 getContentManager().fillContent(reply, ed);
                                 send(reply);
                                 
                                 System.out.println("Enviando información básica del denunciado al Agente Profesor");
-                            } else if (ce instanceof ObtenerEstudiantesDelEquipo){
+                            } else if (ce instanceof ObtenerEstudiantesCalificados){
                                 ACLMessage reply = msg.createReply();
                                 
-                                Equipo eq = new Equipo();
-                                ObtenerEstudiantesDelEquipo predicado = (ObtenerEstudiantesDelEquipo)ce;
-                                eq.setId(predicado.getId_equipo());
-                                
-                                
-                                
-                                //Capacidad de desempeño histórico
-                                EstudiantesDelEquipoAlterado edea = new EstudiantesDelEquipoAlterado();
-                                edea.setEstudiantes(eq.getEstudiantes());
-                                getContentManager().fillContent(reply, edea);
-                                //send(reply);
-                                System.out.println("*********** Enviando información histórica de estudiantes");
+                                ObtenerEstudiantesCalificados predicado = (ObtenerEstudiantesCalificados)ce;
+                                List estudiantes = new ArrayList();
+                                estudiantes = predicado.getId_estudiantes();
+                                EstudiantesCalificados ec = new EstudiantesCalificados();
+                                for (int i = 0; i < estudiantes.size(); i++){
+                                    String response = requestEstudiante(estudiantes.get(i).toString());
+                                    Estudiante e = new Estudiante(response);
+                                    ec.addEstudiantes(e);
+                                }
+                                getContentManager().fillContent(reply, ec);
+                                send(reply);
                                 
                             } else {
                                 // Recibido un INFORM con contenido incorrecto

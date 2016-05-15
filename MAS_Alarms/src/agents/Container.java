@@ -22,6 +22,9 @@ public class Container {
 
     public static void main(String[] args) throws IOException {
         new Container().crearContenedor();
+        new Container().mainMenu();
+    }
+    public void mainMenu() throws IOException{
         System.out.println("1. Denunciar a un estudiante \n2. Calificar una entrega");
         while (true) {
             BufferedReader buff = new BufferedReader(new InputStreamReader(System.in));
@@ -30,17 +33,31 @@ public class Container {
                 new Container().denunciarEstudiante();
                 break;
             } else if (respuesta.equals("2")) {
-                System.out.println("Has elegido calificar una entrega");
+                new Container().calificarEntrega();
                 break;
             } else {
                 System.out.println("El número seleccionado no se encuentra dentro de las opciones");
             }
         }
     }
+    public void calificarEntrega(){
+        System.out.println("Has elegido calificar una entrega");
+        Object[] decision = new Object[1];
+        decision[0]="Calificar";
+        try {
+            AgentController prof = c.createNewAgent("Profesor3", "agents.Teacher", decision);
+            prof.start();
+        } catch (ControllerException e) {
+            // TODO Auto-generated catch block
+            e.printStackTrace();
+        }
+    }
     public void denunciarEstudiante(){
         System.out.println("Has elegido Denunciar a un estudiante");
+        Object[] decision = new Object[1];
+        decision[0] = "Denunciar";
         try{
-            AgentController prof = c.createNewAgent("Profesor2", "agents.Teacher", null);
+            AgentController prof = c.createNewAgent("Profesor2", "agents.Teacher", decision);
             prof.start();
         } catch (ControllerException e) {
             // TODO Auto-generated catch block
