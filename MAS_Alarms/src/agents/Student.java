@@ -28,8 +28,7 @@ public class Student extends Agent {
     protected void setup() {
         DFAgentDescription dfd = new DFAgentDescription();
         ServiceDescription sd = new ServiceDescription();
-        Object[] args = getArguments();
-
+        
         sd.setType("student");
         sd.setName(getName());
         sd.setOwnership("ARNOIA");
@@ -46,15 +45,9 @@ public class Student extends Agent {
 
         getContentManager().registerLanguage(codec);
         getContentManager().registerOntology(ontologia);
-        if (args != null && args.length > 0) {
-            String action = args[0].toString();
-            if (action.equals("Denuncia")){
-                EnviarDenunciados EnviarBehaviour = new EnviarDenunciados(this);
-                addBehaviour(EnviarBehaviour);
-            }else if (action.equals("Calificacion")){
-                
-            }
-        }
+
+        EnviarDenunciados EnviarBehaviour = new EnviarDenunciados(this);
+        addBehaviour(EnviarBehaviour);
     }
     
     @Override
@@ -139,8 +132,7 @@ public class Student extends Agent {
                                 Estudiante e = new Estudiante(response);
                                 EstudianteDenunciado ed = new EstudianteDenunciado();
                                 
-                                ed.setEstudiante(e);
-                                //System.out.println(ed.getEstudiante().getApellido());
+                                ed.setEstudiante(e);System.out.println(ed.getEstudiante().getApellido());
 
                                 getContentManager().fillContent(reply, ed);
                                 send(reply);

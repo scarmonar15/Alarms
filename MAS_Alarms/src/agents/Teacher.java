@@ -57,7 +57,6 @@ public class Teacher extends Agent {
                                         + " llamado " + e.getNombre() + " " + e.getApellido()
                                         + " con correo" + " " + e.getCorreo()
                                 );
-                                doDelete();
                             } else {
                                 // Recibido un INFORM con contenido incorrecto
                                 ACLMessage reply = msg.createReply();
