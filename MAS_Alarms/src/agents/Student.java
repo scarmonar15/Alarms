@@ -61,16 +61,20 @@ public class Student extends Agent {
             fe.printStackTrace();
         }
     }
-    
+   
     private String realizarRequest(String modelo, String id) {
         String url;
         
         if (modelo.equals("projects")) {
             url = "http://apimasalarms.herokuapp.com/" + modelo + "/" + id + "/students";
-        } else {
+        } else if (modelo.equals("teams")) {
+            url = "http://apimasalarms.herokuapp.com/" + modelo + "/" + id + "/get_students";
+        }else if (modelo.equals("info_student")){
+            url = "http://apimasalarms.herokuapp.com/students/" + id + ".json";
+        }else {
             url = "http://apimasalarms.herokuapp.com/" + modelo + "/" + id + ".json";
+       
         }
-        
         StringBuilder response = new StringBuilder();
         
         try {
@@ -83,8 +87,8 @@ public class Student extends Agent {
             con.setRequestProperty("User-Agent", USER_AGENT);
 
             int responseCode = con.getResponseCode();
-            System.out.println("\nSending 'GET' request to URL : " + url);
-            System.out.println("Response Code : " + responseCode);
+            //System.out.println("\nSending 'GET' request to URL : " + url);
+            //System.out.println("Response Code : " + responseCode);
 
             BufferedReader in = new BufferedReader(
                 new InputStreamReader(con.getInputStream())
@@ -205,10 +209,19 @@ public class Student extends Agent {
                                 ObtenerEstudiantesDelEquipo predicado = (ObtenerEstudiantesDelEquipo) ce;
                                 
                                 //Request
-                                //String response = realizarRequest("assignments", String.valueOf(predicado.getId_entrega()));
-                                
+                                String response = realizarRequest("teams", String.valueOf(predicado.getId_equipo()));
+                                response = response.substring(1, response.length() - 1);
+                                String[] aux_array = response.split(",");
+                                List estudiantes = new ArrayList();
                                 EstudiantesDelEquipoAlterado edea = new EstudiantesDelEquipoAlterado();
-                                System.out.println("ID Equipo Alterado Recibido: " + predicado.getId_equipo());
+                                //System.out.println("ID Equipo Alterado Recibido: " + predicado.getId_equipo());
+                                for (String id : aux_array) {
+                                    estudiantes.add(Integer.parseInt(id));
+                                    String res = realizarRequest("info_student",id);
+                                    Estudiante estudiante = new Estudiante(res);
+                                    edea.addEstudiantes(estudiante);
+                                }                               
+   
                                 getContentManager().fillContent(reply, edea);
                                 send(reply);
                             } else {

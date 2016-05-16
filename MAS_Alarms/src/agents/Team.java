@@ -38,11 +38,11 @@ public class Team extends Agent {
         
         SenderBehaviour = new ObtenerHistorico(this);
         PingBehaviour = new  RecibirDesempegnoHistorico(this);
-        MirarProyecto tickerProyecto = new MirarProyecto(this, 10000);
-        MirarNuevosEquipos tickerNuevosEquipos = new MirarNuevosEquipos(this, 5000);
+        MirarProyecto tickerProyecto = new MirarProyecto(this, 1000000);
+        MirarNuevosEquipos tickerNuevosEquipos = new MirarNuevosEquipos(this, 10000);
         
         addBehaviour(tbf.wrap(tickerProyecto));
-        //addBehaviour(tbf.wrap(tickerNuevosEquipos));
+        addBehaviour(tbf.wrap(tickerNuevosEquipos));
         //addBehaviour(SenderBehaviour);
         addBehaviour(PingBehaviour);
     }
@@ -98,12 +98,17 @@ public class Team extends Agent {
         @Override
         public void onTick(){
             //REQUEST
-            String response = realizarRequest("assignments");
+            String response = realizarRequest("teams");
             
             Gson gson = new Gson();
-            ArrayList entregas = gson.fromJson(response, ArrayList.class);
+            response = response.substring(1, response.length() - 1);
+            String[] aux_array = response.split(",");
+            List equipos = new ArrayList();
             
-            if (entregas.isEmpty()) {
+            for (String id : aux_array) {
+                equipos.add(Integer.parseInt(id));
+            }
+            if (equipos.isEmpty()) {
                 System.out.println("No hay nuevas entregas!");
             } else {
                 AID r = new AID();
@@ -114,17 +119,17 @@ public class Team extends Agent {
                 msg.addReceiver(r);
                 msg.setLanguage(codec.getName());
                 msg.setOntology(ontologia.getName());
-
-                ObtenerEstudiantesDelEquipo oede = new ObtenerEstudiantesDelEquipo();
-                oede.setId_equipo(1);
-
-                try {
-                    getContentManager().fillContent(msg, oede);
-                } catch (Codec.CodecException | OntologyException ex) {
-                    Logger.getLogger(Team.class.getName()).log(Level.SEVERE, null, ex);
+                
+                for (int i = 0; i < equipos.size(); i++) {
+                    ObtenerEstudiantesDelEquipo oede = new ObtenerEstudiantesDelEquipo();
+                    oede.setId_equipo(Integer.parseInt(equipos.get(i).toString()));
+                    try {
+                        getContentManager().fillContent(msg, oede);
+                    } catch (Codec.CodecException | OntologyException ex) {
+                        Logger.getLogger(Team.class.getName()).log(Level.SEVERE, null, ex);
+                    }
+                    send(msg);
                 }
-
-                send(msg);
             }
         }
     }
@@ -153,13 +158,15 @@ public class Team extends Agent {
                     if(msg.getPerformative()== ACLMessage.INFORM){
                     ContentElement ce = getContentManager().extractContent(msg);
                     if (ce instanceof EstudiantesDelEquipoAlterado){
-                        // Recibido un INFORM con contenido correcto
-                        /*EstudiantesDelEquipoAlterado edea = (EstudiantesDelEquipoAlterado) ce;
+                        //Recibido un INFORM con contenido correcto
+                        EstudiantesDelEquipoAlterado edea = (EstudiantesDelEquipoAlterado) ce;
                         List estudiantes = edea.getEstudiantes();
-                        System.out.println("*********** Desempeño recibido");
-                        System.out.println("*********** Se han recibido los estudiantes del equipo "
-                                + estudiantes.get(0));*/
-                        System.out.println("Estudiantes Del Equipo Recibidos");
+                        
+                        for (int i = 0; i < estudiantes.size(); i++) {
+                            Estudiante estudiante = (Estudiante)estudiantes.get(i);
+                            System.out.println("Señor " + estudiante.getNombre() + " " + estudiante.getApellido() + " usted ha "
+                                    + "sido asignado a un nuevo equipo.");
+                        }
 
                     } else if (ce instanceof EstudiantesDelProyecto){
                         EstudiantesDelProyecto edp = (EstudiantesDelProyecto) ce;
@@ -278,8 +285,8 @@ public class Team extends Agent {
             con.setRequestProperty("User-Agent", USER_AGENT);
 
             int responseCode = con.getResponseCode();
-            System.out.println("\nSending 'GET' request to URL : " + url);
-            System.out.println("Response Code : " + responseCode);
+            //System.out.println("\nSending 'GET' request to URL : " + url);
+            //System.out.println("Response Code : " + responseCode);
 
             BufferedReader in = new BufferedReader(
                 new InputStreamReader(con.getInputStream())
