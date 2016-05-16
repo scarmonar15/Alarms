@@ -5,12 +5,11 @@ import com.google.gson.JsonObject;
 import com.google.gson.JsonParser;
 import jade.content.*;
 import jade.util.leap.*;
-import jade.core.*;
 
 /**
 * Protege name: Entrega
 * @author ontology bean generator
-* @version 2016/05/15, 02:18:59
+* @version 2016/05/16, 13:35:32
 */
 public class Entrega implements Concept {
 
@@ -23,9 +22,11 @@ public class Entrega implements Concept {
         setFecha(json_object.get("limit_date").getAsString());
         setEnunciado(json_object.get("description").getAsString());
     }
+    
    /**
 * Protege name: tareas
    */
+    
    private List tareas = new ArrayList();
    public void addTareas(Tarea elem) { 
      List oldList = this.tareas;

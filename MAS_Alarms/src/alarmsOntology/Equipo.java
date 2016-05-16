@@ -1,17 +1,35 @@
 package alarmsOntology;
 
 
+import com.google.gson.JsonArray;
+import com.google.gson.JsonElement;
+import com.google.gson.JsonObject;
+import com.google.gson.JsonParser;
 import jade.content.*;
 import jade.util.leap.*;
-import jade.core.*;
 
 /**
 * Protege name: Equipo
 * @author ontology bean generator
-* @version 2016/05/15, 02:18:59
+* @version 2016/05/16, 13:35:31
 */
 public class Equipo implements Concept {
-
+    
+    public Equipo() {}
+    
+    public Equipo(JsonObject json_object) {
+        setId(json_object.get("id").getAsInt());
+        
+        JsonArray students_array = json_object.get("students").getAsJsonArray();
+        List est = new ArrayList();
+        
+        for (JsonElement student : students_array) {
+            Estudiante stud = new Estudiante(student.getAsJsonObject());
+            est.add(stud);
+        }
+        
+        setEstudiantes(est);
+    }
    /**
 * Protege name: estudiantes
    */

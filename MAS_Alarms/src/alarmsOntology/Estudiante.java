@@ -1,5 +1,6 @@
 package alarmsOntology;
 
+
 import com.google.gson.JsonObject;
 import com.google.gson.JsonParser;
 import jade.content.*;
@@ -7,10 +8,10 @@ import jade.content.*;
 /**
 * Protege name: Estudiante
 * @author ontology bean generator
-* @version 2016/05/9, 22:41:11
+* @version 2016/05/16, 13:35:32
 */
 public class Estudiante implements Concept {
-    
+
     public Estudiante() {}
     
     public Estudiante(String json_doc) {
@@ -19,7 +20,14 @@ public class Estudiante implements Concept {
         setCedula(json_object.get("id").getAsString());
         setNombre(json_object.get("name").getAsString());
         setApellido(json_object.get("last_name").getAsString());
-        setCorreo(json_object.get("mail").getAsString());
+        setCorreo(json_object.get("email").getAsString());
+    }
+    
+    public Estudiante(JsonObject json_object) {        
+        setCedula(json_object.get("id").getAsString());
+        setNombre(json_object.get("name").getAsString());
+        setApellido(json_object.get("last_name").getAsString());
+        setCorreo(json_object.get("email").getAsString());
     }
    /**
 * Protege name: apellido

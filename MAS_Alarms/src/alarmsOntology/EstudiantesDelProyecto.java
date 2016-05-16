@@ -8,40 +8,29 @@ import jade.core.*;
 /**
 * Protege name: EstudiantesDelProyecto
 * @author ontology bean generator
-* @version 2016/05/15, 02:19:00
+* @version 2016/05/16, 13:35:32
 */
 public class EstudiantesDelProyecto implements Predicate {
 
    /**
-* Protege name: estudiantes
+* Protege name: proyectos
    */
-   private List estudiantes = new ArrayList();
-   public void addEstudiantes(Estudiante elem) { 
-     List oldList = this.estudiantes;
-     estudiantes.add(elem);
+   private List proyectos = new ArrayList();
+   public void addProyectos(Proyecto elem) { 
+     List oldList = this.proyectos;
+     proyectos.add(elem);
    }
-   public boolean removeEstudiantes(Estudiante elem) {
-     List oldList = this.estudiantes;
-     boolean result = estudiantes.remove(elem);
+   public boolean removeProyectos(Proyecto elem) {
+     List oldList = this.proyectos;
+     boolean result = proyectos.remove(elem);
      return result;
    }
-   public void clearAllEstudiantes() {
-     List oldList = this.estudiantes;
-     estudiantes.clear();
+   public void clearAllProyectos() {
+     List oldList = this.proyectos;
+     proyectos.clear();
    }
-   public Iterator getAllEstudiantes() {return estudiantes.iterator(); }
-   public List getEstudiantes() {return estudiantes; }
-   public void setEstudiantes(List l) {estudiantes = l; }
-
-   /**
-* Protege name: proyecto
-   */
-   private Proyecto proyecto;
-   public void setProyecto(Proyecto value) { 
-    this.proyecto=value;
-   }
-   public Proyecto getProyecto() {
-     return this.proyecto;
-   }
+   public Iterator getAllProyectos() {return proyectos.iterator(); }
+   public List getProyectos() {return proyectos; }
+   public void setProyectos(List l) {proyectos = l; }
 
 }

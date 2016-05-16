@@ -1,17 +1,38 @@
 package alarmsOntology;
 
-
+import com.google.gson.JsonArray;
+import com.google.gson.JsonElement;
+import com.google.gson.JsonObject;
+import com.google.gson.JsonParser;
 import jade.content.*;
 import jade.util.leap.*;
-import jade.core.*;
 
 /**
 * Protege name: Proyecto
 * @author ontology bean generator
-* @version 2016/05/15, 02:18:59
+* @version 2016/05/16, 13:35:32
 */
 public class Proyecto implements Concept {
 
+    public Proyecto() {}
+    
+    public Proyecto(String json_doc) {
+        JsonObject json_object = new JsonParser().parse(json_doc).getAsJsonObject();
+        
+        setId(json_object.get("id").getAsInt());
+        setTitulo(json_object.get("title").getAsString());
+        setObjetivo(json_object.get("description").getAsString());
+        
+        JsonArray teams_array = json_object.get("teams").getAsJsonArray();
+        List nuevos_equipos = new ArrayList();
+        
+        for (JsonElement team : teams_array) {
+            Equipo nuevo_equipo = new Equipo(team.getAsJsonObject());
+            nuevos_equipos.add(nuevo_equipo);
+        }
+        
+        setEquipos(nuevos_equipos);
+    }
    /**
 * Protege name: titulo
    */
@@ -35,25 +56,25 @@ public class Proyecto implements Concept {
    }
 
    /**
-* Protege name: entregas
+* Protege name: equipos
    */
-   private List entregas = new ArrayList();
-   public void addEntregas(Entrega elem) { 
-     List oldList = this.entregas;
-     entregas.add(elem);
+   private List equipos = new ArrayList();
+   public void addEquipos(Equipo elem) { 
+     List oldList = this.equipos;
+     equipos.add(elem);
    }
-   public boolean removeEntregas(Entrega elem) {
-     List oldList = this.entregas;
-     boolean result = entregas.remove(elem);
+   public boolean removeEquipos(Equipo elem) {
+     List oldList = this.equipos;
+     boolean result = equipos.remove(elem);
      return result;
    }
-   public void clearAllEntregas() {
-     List oldList = this.entregas;
-     entregas.clear();
+   public void clearAllEquipos() {
+     List oldList = this.equipos;
+     equipos.clear();
    }
-   public Iterator getAllEntregas() {return entregas.iterator(); }
-   public List getEntregas() {return entregas; }
-   public void setEntregas(List l) {entregas = l; }
+   public Iterator getAllEquipos() {return equipos.iterator(); }
+   public List getEquipos() {return equipos; }
+   public void setEquipos(List l) {equipos = l; }
 
    /**
 * Protege name: objetivo

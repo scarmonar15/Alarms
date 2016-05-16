@@ -9,7 +9,7 @@ import jade.core.CaseInsensitiveString;
 
 /** file: AlarmsOntology.java
  * @author ontology bean generator
- * @version 2016/05/15, 02:18:59
+ * @version 2016/05/16, 13:35:31
  */
 public class AlarmsOntology extends jade.content.onto.Ontology  {
   //NAME
@@ -29,8 +29,7 @@ public class AlarmsOntology extends jade.content.onto.Ontology  {
     public static final String OBTENERESTUDIANTESDELEQUIPO="ObtenerEstudiantesDelEquipo";
     public static final String ESTUDIANTESCALIFICADOS_ESTUDIANTES="estudiantes";
     public static final String ESTUDIANTESCALIFICADOS="EstudiantesCalificados";
-    public static final String ESTUDIANTESDELPROYECTO_PROYECTO="proyecto";
-    public static final String ESTUDIANTESDELPROYECTO_ESTUDIANTES="estudiantes";
+    public static final String ESTUDIANTESDELPROYECTO_PROYECTOS="proyectos";
     public static final String ESTUDIANTESDELPROYECTO="EstudiantesDelProyecto";
     public static final String ENTREGACALIFICADA_NOTA="nota";
     public static final String ENTREGACALIFICADA_ENTREGA="entrega";
@@ -44,11 +43,10 @@ public class AlarmsOntology extends jade.content.onto.Ontology  {
     public static final String OBTENERENTREGACALIFICADA_NOTA="nota";
     public static final String OBTENERENTREGACALIFICADA_ID_ENTREGA="id_entrega";
     public static final String OBTENERENTREGACALIFICADA="ObtenerEntregaCalificada";
-    public static final String OBTENERESTUDIANTESDELPROYECTO_ID_PROYECTO="id_proyecto";
-    public static final String OBTENERESTUDIANTESDELPROYECTO_ID_EQUIPO="id_equipo";
+    public static final String OBTENERESTUDIANTESDELPROYECTO_ID_PROYECTOS="id_proyectos";
     public static final String OBTENERESTUDIANTESDELPROYECTO="ObtenerEstudiantesDelProyecto";
     public static final String PROYECTO_OBJETIVO="objetivo";
-    public static final String PROYECTO_ENTREGAS="entregas";
+    public static final String PROYECTO_EQUIPOS="equipos";
     public static final String PROYECTO_ID="id";
     public static final String PROYECTO_TITULO="titulo";
     public static final String PROYECTO="Proyecto";
@@ -136,10 +134,9 @@ public class AlarmsOntology extends jade.content.onto.Ontology  {
     entregaSchema.add(ENTREGA_ENUNCIADO, (TermSchema)getSchema(BasicOntology.STRING), ObjectSchema.MANDATORY);
     proyectoSchema.add(PROYECTO_TITULO, (TermSchema)getSchema(BasicOntology.STRING), ObjectSchema.MANDATORY);
     proyectoSchema.add(PROYECTO_ID, (TermSchema)getSchema(BasicOntology.INTEGER), ObjectSchema.MANDATORY);
-    proyectoSchema.add(PROYECTO_ENTREGAS, entregaSchema, 0, ObjectSchema.UNLIMITED);
+    proyectoSchema.add(PROYECTO_EQUIPOS, equipoSchema, 0, ObjectSchema.UNLIMITED);
     proyectoSchema.add(PROYECTO_OBJETIVO, (TermSchema)getSchema(BasicOntology.STRING), ObjectSchema.MANDATORY);
-    obtenerEstudiantesDelProyectoSchema.add(OBTENERESTUDIANTESDELPROYECTO_ID_EQUIPO, (TermSchema)getSchema(BasicOntology.INTEGER), ObjectSchema.MANDATORY);
-    obtenerEstudiantesDelProyectoSchema.add(OBTENERESTUDIANTESDELPROYECTO_ID_PROYECTO, (TermSchema)getSchema(BasicOntology.INTEGER), ObjectSchema.MANDATORY);
+    obtenerEstudiantesDelProyectoSchema.add(OBTENERESTUDIANTESDELPROYECTO_ID_PROYECTOS, (TermSchema)getSchema(BasicOntology.INTEGER), 1, ObjectSchema.UNLIMITED);
     obtenerEntregaCalificadaSchema.add(OBTENERENTREGACALIFICADA_ID_ENTREGA, (TermSchema)getSchema(BasicOntology.INTEGER), ObjectSchema.MANDATORY);
     obtenerEntregaCalificadaSchema.add(OBTENERENTREGACALIFICADA_NOTA, (TermSchema)getSchema(BasicOntology.FLOAT), ObjectSchema.MANDATORY);
     estudianteDenunciadoSchema.add(ESTUDIANTEDENUNCIADO_ESTUDIANTE, estudianteSchema, ObjectSchema.MANDATORY);
@@ -147,8 +144,7 @@ public class AlarmsOntology extends jade.content.onto.Ontology  {
     obtenerEstudiantesCalificadosSchema.add(OBTENERESTUDIANTESCALIFICADOS_ID_ESTUDIANTES, (TermSchema)getSchema(BasicOntology.STRING), 1, ObjectSchema.UNLIMITED);
     entregaCalificadaSchema.add(ENTREGACALIFICADA_ENTREGA, entregaSchema, ObjectSchema.MANDATORY);
     entregaCalificadaSchema.add(ENTREGACALIFICADA_NOTA, (TermSchema)getSchema(BasicOntology.FLOAT), ObjectSchema.MANDATORY);
-    estudiantesDelProyectoSchema.add(ESTUDIANTESDELPROYECTO_ESTUDIANTES, estudianteSchema, 0, ObjectSchema.UNLIMITED);
-    estudiantesDelProyectoSchema.add(ESTUDIANTESDELPROYECTO_PROYECTO, proyectoSchema, ObjectSchema.OPTIONAL);
+    estudiantesDelProyectoSchema.add(ESTUDIANTESDELPROYECTO_PROYECTOS, proyectoSchema, 1, ObjectSchema.UNLIMITED);
     estudiantesCalificadosSchema.add(ESTUDIANTESCALIFICADOS_ESTUDIANTES, estudianteSchema, 0, ObjectSchema.UNLIMITED);
     obtenerEstudiantesDelEquipoSchema.add(OBTENERESTUDIANTESDELEQUIPO_ID_EQUIPO, (TermSchema)getSchema(BasicOntology.INTEGER), ObjectSchema.MANDATORY);
     estudiantesDelEquipoAlteradoSchema.add(ESTUDIANTESDELEQUIPOALTERADO_ESTUDIANTES, estudianteSchema, 0, ObjectSchema.UNLIMITED);

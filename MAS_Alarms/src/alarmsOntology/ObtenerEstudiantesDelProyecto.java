@@ -8,30 +8,25 @@ import jade.core.*;
 /**
 * Protege name: ObtenerEstudiantesDelProyecto
 * @author ontology bean generator
-* @version 2016/05/15, 02:18:59
+* @version 2016/05/16, 13:35:32
 */
 public class ObtenerEstudiantesDelProyecto implements Predicate {
 
    /**
-* Protege name: id_equipo
+* Protege name: id_proyectos
    */
-   private int id_equipo;
-   public void setId_equipo(int value) { 
-    this.id_equipo=value;
-   }
-   public int getId_equipo() {
-     return this.id_equipo;
+   private List id_proyectos = new ArrayList();
+   public void addId_proyectos(int elem) { 
+     List oldList = this.id_proyectos;
+     id_proyectos.add(elem);
    }
 
-   /**
-* Protege name: id_proyecto
-   */
-   private int id_proyecto;
-   public void setId_proyecto(int value) { 
-    this.id_proyecto=value;
+   public void clearAllId_proyectos() {
+     List oldList = this.id_proyectos;
+     id_proyectos.clear();
    }
-   public int getId_proyecto() {
-     return this.id_proyecto;
-   }
+   public Iterator getAllId_proyectos() {return id_proyectos.iterator(); }
+   public List getId_proyectos() {return id_proyectos; }
+   public void setId_proyectos(List l) {id_proyectos = l; }
 
 }

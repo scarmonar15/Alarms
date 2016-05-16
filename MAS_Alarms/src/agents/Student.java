@@ -7,7 +7,6 @@ import jade.content.lang.sl.SLCodec;
 import jade.content.onto.Ontology;
 import jade.core.Agent;
 import jade.core.behaviours.SimpleBehaviour;
-import jade.core.behaviours.TickerBehaviour;
 import jade.domain.DFService;
 import jade.domain.FIPAAgentManagement.DFAgentDescription;
 import jade.domain.FIPAAgentManagement.ServiceDescription;
@@ -20,7 +19,6 @@ import java.io.BufferedReader;
 import java.io.InputStreamReader;
 import java.net.HttpURLConnection;
 import java.net.URL;
-import static javax.management.Query.eq;
 
 public class Student extends Agent {
 
@@ -49,9 +47,6 @@ public class Student extends Agent {
 
         getContentManager().registerLanguage(codec);
         getContentManager().registerOntology(ontologia);
-        
-        MirarProyecto tickerProyecto = new MirarProyecto(this, 5000);
-        addBehaviour(tickerProyecto);
 
         EnviarDenunciados EnviarBehaviour = new EnviarDenunciados(this);
         addBehaviour(EnviarBehaviour);
@@ -68,7 +63,14 @@ public class Student extends Agent {
     }
     
     private String realizarRequest(String modelo, String id) {
-        String url = "http://alarms-api.herokuapp.com/" + modelo + "/" + id + ".json";
+        String url;
+        
+        if (modelo.equals("projects")) {
+            url = "http://apimasalarms.herokuapp.com/" + modelo + "/" + id + "/students";
+        } else {
+            url = "http://apimasalarms.herokuapp.com/" + modelo + "/" + id + ".json";
+        }
+        
         StringBuilder response = new StringBuilder();
         
         try {
@@ -100,15 +102,6 @@ public class Student extends Agent {
         }
         
         return response.toString();
-    }
-    
-    class MirarProyecto extends TickerBehaviour{
-        public MirarProyecto(Agent a, long timer){
-            super(a,timer);
-        }
-        public void onTick(){
-            System.out.println("tick");
-        }
     }
     
     class EnviarDenunciados extends SimpleBehaviour {
@@ -186,6 +179,37 @@ public class Student extends Agent {
                                 ec.setNota(predicado.getNota());
                                 
                                 getContentManager().fillContent(reply, ec);
+                                send(reply);
+                            } else if (ce instanceof ObtenerEstudiantesDelProyecto) {
+                                ACLMessage reply = msg.createReply();
+                                
+                                ObtenerEstudiantesDelProyecto predicado = (ObtenerEstudiantesDelProyecto) ce;
+                                List proyectos = new ArrayList();
+                                String response;
+                                
+                                //Request
+                                for (int i = 0; i < predicado.getId_proyectos().size(); i++) {
+                                    response = realizarRequest("projects", String.valueOf(predicado.getId_proyectos().get(i)));
+                                    Proyecto proyecto = new Proyecto(response);
+                                    proyectos.add(proyecto);
+                                }
+                                
+                                EstudiantesDelProyecto edp = new EstudiantesDelProyecto();
+                                edp.setProyectos(proyectos);
+                                
+                                getContentManager().fillContent(reply, edp);
+                                send(reply);
+                            } else if (ce instanceof ObtenerEstudiantesDelEquipo) {
+                                ACLMessage reply = msg.createReply();
+                                
+                                ObtenerEstudiantesDelEquipo predicado = (ObtenerEstudiantesDelEquipo) ce;
+                                
+                                //Request
+                                //String response = realizarRequest("assignments", String.valueOf(predicado.getId_entrega()));
+                                
+                                EstudiantesDelEquipoAlterado edea = new EstudiantesDelEquipoAlterado();
+                                System.out.println("ID Equipo Alterado Recibido: " + predicado.getId_equipo());
+                                getContentManager().fillContent(reply, edea);
                                 send(reply);
                             } else {
                                 // Recibido un INFORM con contenido incorrecto
