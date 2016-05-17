@@ -33,14 +33,13 @@ public class Team extends Agent {
         getContentManager().registerOntology(ontologia);
 
         RecibirDesempegnoHistorico PingBehaviour = new RecibirDesempegnoHistorico(this);
-        MirarNuevosProyectos tickerProyectos = new MirarNuevosProyectos(this, 1000000);
-        MirarNuevasEntregas tickerEntregas = new MirarNuevasEntregas(this, 10000);
-        MirarNuevosEquipos tickerNuevosEquipos = new MirarNuevosEquipos(this, 10000);
+        MirarNuevosProyectos tickerProyectos = new MirarNuevosProyectos(this, 5000);
+        MirarNuevasEntregas tickerEntregas = new MirarNuevasEntregas(this, 5000);
+        MirarNuevosEquipos tickerNuevosEquipos = new MirarNuevosEquipos(this, 15000);
         
         //addBehaviour(tbf.wrap(tickerProyectos));
         //addBehaviour(tbf.wrap(tickerEntregas));
         //addBehaviour(tbf.wrap(tickerNuevosEquipos));
-        //addBehaviour(SenderBehaviour);
         addBehaviour(PingBehaviour);
     }
     

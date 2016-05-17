@@ -1,6 +1,7 @@
 package agents;
 
 import alarmsOntology.*;
+import com.sun.mail.smtp.SMTPTransport;
 import jade.core.*;
 import jade.core.behaviours.*;
 import jade.lang.acl.*;
@@ -15,8 +16,16 @@ import java.io.IOException;
 import java.io.InputStreamReader;
 import java.net.HttpURLConnection;
 import java.net.URL;
+import java.security.Security;
+import java.util.Date;
+import java.util.Properties;
 import java.util.logging.Level;
 import java.util.logging.Logger;
+import javax.mail.Message;
+import javax.mail.MessagingException;
+import javax.mail.Session;
+import javax.mail.internet.InternetAddress;
+import javax.mail.internet.MimeMessage;
  
 public class Teacher extends Agent {
  
@@ -47,7 +56,7 @@ public class Teacher extends Agent {
         MirarNuevasAsesorias tickerNuevasAsesorias = new MirarNuevasAsesorias(this, 10000);
         
         //addBehaviour(tbf.wrap(tickerNuevosOAs));
-        addBehaviour(tbf.wrap(tickerNuevasAsesorias));
+        //addBehaviour(tbf.wrap(tickerNuevasAsesorias));
         addBehaviour(PingBehaviour);
     }
     
@@ -177,8 +186,9 @@ public class Teacher extends Agent {
                                 System.out.println("Se ha hecho una denuncia de un estudiante"
                                         + " con cédula: " + e.getCedula()
                                         + " llamado " + e.getNombre() + " " + e.getApellido()
-                                        + " con correo" + " " + e.getCorreo()
+                                        + " con correo" + " " + e.getCorreo() + "\n"
                                 );
+                                
                                 doDelete();
                                 new Container().mainMenu();
                             }else if(ce instanceof EstudiantesCalificados){
@@ -219,7 +229,7 @@ public class Teacher extends Agent {
                                 System.out.println("La entrega recibida tiene los siguientes datos:\n"
                                         + "ID: " + e.getId()
                                         + "\nFecha: " + e.getFecha()
-                                        + "\nEnunciado: " + e.getEnunciado()
+                                        + "\nEnunciado: " + e.getEnunciado() + "\n"
                                 );
                                 
                                 doDelete();

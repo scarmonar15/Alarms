@@ -17,8 +17,8 @@ import java.io.IOException;
 import java.io.InputStreamReader;
 
 public class Container {
-    static Teacher zapata;
     static ContainerController c;
+    static int agent_cont = 1;
 
     public static void main(String[] args) throws IOException {
         new Container().crearContenedor();
@@ -30,9 +30,11 @@ public class Container {
             BufferedReader buff = new BufferedReader(new InputStreamReader(System.in));
             String respuesta = buff.readLine();
             if (respuesta.equals("1")) {
+                System.out.println();
                 new Container().denunciarEstudiante();
                 break;
             } else if (respuesta.equals("2")) {
+                System.out.println();
                 new Container().calificarEntrega();
                 break;
             } else {
@@ -45,8 +47,9 @@ public class Container {
         Object[] decision = new Object[1];
         decision[0]="Calificar";
         try {
-            AgentController prof = c.createNewAgent("Profesor3", "agents.Teacher", decision);
+            AgentController prof = c.createNewAgent("Profesor" + agent_cont, "agents.Teacher", decision);
             prof.start();
+            agent_cont++;
         } catch (ControllerException e) {
             // TODO Auto-generated catch block
             e.printStackTrace();
@@ -57,8 +60,9 @@ public class Container {
         Object[] decision = new Object[1];
         decision[0] = "Denunciar";
         try{
-            AgentController prof = c.createNewAgent("Profesor2", "agents.Teacher", decision);
+            AgentController prof = c.createNewAgent("Profesor" + agent_cont, "agents.Teacher", decision);
             prof.start();
+            agent_cont++;
         } catch (ControllerException e) {
             // TODO Auto-generated catch block
             e.printStackTrace();

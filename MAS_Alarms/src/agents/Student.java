@@ -187,7 +187,7 @@ public class Student extends Agent {
                                 ObtenerEntregaCalificada predicado = (ObtenerEntregaCalificada) ce;
                                 
                                 //Request
-                                String response = realizarRequest("assignments", String.valueOf(predicado.getId_entrega()));
+                                String response = realizarRequest("info_assignment", String.valueOf(predicado.getId_entrega()));
                                 
                                 EntregaCalificada ec = new EntregaCalificada();
                                 Entrega e = new Entrega(response);
