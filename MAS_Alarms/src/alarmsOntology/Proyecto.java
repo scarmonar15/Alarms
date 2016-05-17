@@ -1,5 +1,6 @@
 package alarmsOntology;
 
+
 import com.google.gson.JsonArray;
 import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
@@ -10,7 +11,7 @@ import jade.util.leap.*;
 /**
 * Protege name: Proyecto
 * @author ontology bean generator
-* @version 2016/05/16, 13:35:32
+* @version 2016/05/16, 18:07:43
 */
 public class Proyecto implements Concept {
 
@@ -75,6 +76,27 @@ public class Proyecto implements Concept {
    public Iterator getAllEquipos() {return equipos.iterator(); }
    public List getEquipos() {return equipos; }
    public void setEquipos(List l) {equipos = l; }
+
+   /**
+* Protege name: entregas
+   */
+   private List entregas = new ArrayList();
+   public void addEntregas(Entrega elem) { 
+     List oldList = this.entregas;
+     entregas.add(elem);
+   }
+   public boolean removeEntregas(Entrega elem) {
+     List oldList = this.entregas;
+     boolean result = entregas.remove(elem);
+     return result;
+   }
+   public void clearAllEntregas() {
+     List oldList = this.entregas;
+     entregas.clear();
+   }
+   public Iterator getAllEntregas() {return entregas.iterator(); }
+   public List getEntregas() {return entregas; }
+   public void setEntregas(List l) {entregas = l; }
 
    /**
 * Protege name: objetivo

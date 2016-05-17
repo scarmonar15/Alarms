@@ -92,7 +92,6 @@ public class Teacher extends Agent {
                                     );
                                 }
                             } else if(ce instanceof EntregaCalificada) {
-                                System.out.println("fff");
                                 EntregaCalificada ec = (EntregaCalificada) ce;
                                 Entrega e = ec.getEntrega();
                                 

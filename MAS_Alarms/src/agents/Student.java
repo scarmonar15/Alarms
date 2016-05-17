@@ -65,15 +65,22 @@ public class Student extends Agent {
     private String realizarRequest(String modelo, String id) {
         String url;
         
-        if (modelo.equals("projects")) {
-            url = "http://apimasalarms.herokuapp.com/" + modelo + "/" + id + "/students";
-        } else if (modelo.equals("teams")) {
-            url = "http://apimasalarms.herokuapp.com/" + modelo + "/" + id + "/get_students";
-        }else if (modelo.equals("info_student")){
-            url = "http://apimasalarms.herokuapp.com/students/" + id + ".json";
-        }else {
-            url = "http://apimasalarms.herokuapp.com/" + modelo + "/" + id + ".json";
-       
+        switch (modelo) {
+            case "projects":
+                url = "http://apimasalarms.herokuapp.com/" + modelo + "/" + id + "/students";
+                break;
+            case "teams":
+                url = "http://apimasalarms.herokuapp.com/" + modelo + "/" + id + "/students";
+                break;
+            case "info_assignment":
+                url = "http://apimasalarms.herokuapp.com/assignments/" + id + "/students";
+                break;
+            case "info_student":
+                url = "http://apimasalarms.herokuapp.com/students/" + id + ".json";
+                break;
+            default:
+                url = "http://apimasalarms.herokuapp.com/" + modelo + "/" + id + ".json";
+                break;
         }
         StringBuilder response = new StringBuilder();
         
@@ -203,26 +210,43 @@ public class Student extends Agent {
                                 
                                 getContentManager().fillContent(reply, edp);
                                 send(reply);
+                            } else if (ce instanceof ObtenerEstudiantesDeEntrega) {
+                                ACLMessage reply = msg.createReply();
+                                
+                                ObtenerEstudiantesDeEntrega predicado = (ObtenerEstudiantesDeEntrega) ce;
+                                List entregas = new ArrayList();
+                                String response;
+                                
+                                //Request
+                                for (int i = 0; i < predicado.getId_entregas().size(); i++) {
+                                    response = realizarRequest("info_assignment", String.valueOf(predicado.getId_entregas().get(i)));
+                                    Entrega entrega = new Entrega(response);
+                                    entregas.add(entrega);
+                                }
+                                
+                                EstudiantesDeEntrega ede = new EstudiantesDeEntrega();
+                                ede.setEntregas(entregas);
+                                
+                                getContentManager().fillContent(reply, ede);
+                                send(reply);
                             } else if (ce instanceof ObtenerEstudiantesDelEquipo) {
                                 ACLMessage reply = msg.createReply();
                                 
                                 ObtenerEstudiantesDelEquipo predicado = (ObtenerEstudiantesDelEquipo) ce;
+                                List equipos = new ArrayList();
+                                String response;
                                 
                                 //Request
-                                String response = realizarRequest("teams", String.valueOf(predicado.getId_equipo()));
-                                response = response.substring(1, response.length() - 1);
-                                String[] aux_array = response.split(",");
-                                List estudiantes = new ArrayList();
-                                EstudiantesDelEquipoAlterado edea = new EstudiantesDelEquipoAlterado();
-                                //System.out.println("ID Equipo Alterado Recibido: " + predicado.getId_equipo());
-                                for (String id : aux_array) {
-                                    estudiantes.add(Integer.parseInt(id));
-                                    String res = realizarRequest("info_student",id);
-                                    Estudiante estudiante = new Estudiante(res);
-                                    edea.addEstudiantes(estudiante);
-                                }                               
-   
-                                getContentManager().fillContent(reply, edea);
+                                for (int i = 0; i < predicado.getId_equipos().size(); i++) {
+                                    response = realizarRequest("teams", String.valueOf(predicado.getId_equipos().get(i)));
+                                    Equipo equipo = new Equipo(response);
+                                    equipos.add(equipo);
+                                }
+                                
+                                EstudiantesDelEquipoAlterado ede = new EstudiantesDelEquipoAlterado();
+                                ede.setEquipos(equipos);
+                                
+                                getContentManager().fillContent(reply, ede);
                                 send(reply);
                             } else {
                                 // Recibido un INFORM con contenido incorrecto
@@ -245,7 +269,7 @@ public class Student extends Agent {
                     }
                 }
             } catch (jade.content.lang.Codec.CodecException | jade.content.onto.OntologyException e) {
-                System.out.println(e);
+                System.out.println(e);System.out.println("gola");
             } 
         }    
         

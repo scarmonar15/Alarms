@@ -11,11 +11,27 @@ import jade.util.leap.*;
 /**
 * Protege name: Equipo
 * @author ontology bean generator
-* @version 2016/05/16, 13:35:31
+* @version 2016/05/16, 18:07:43
 */
 public class Equipo implements Concept {
-    
+
     public Equipo() {}
+    
+    public Equipo(String json_doc) {
+        JsonObject json_object = new JsonParser().parse(json_doc).getAsJsonObject();
+        
+        setId(json_object.get("id").getAsInt());
+        
+        JsonArray students_array = json_object.get("students").getAsJsonArray();
+        List est = new ArrayList();
+        
+        for (JsonElement student : students_array) {
+            Estudiante stud = new Estudiante(student.getAsJsonObject());
+            est.add(stud);
+        }
+        
+        setEstudiantes(est);
+    }
     
     public Equipo(JsonObject json_object) {
         setId(json_object.get("id").getAsInt());

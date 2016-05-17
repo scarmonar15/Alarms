@@ -8,7 +8,7 @@ import jade.content.*;
 /**
 * Protege name: Estudiante
 * @author ontology bean generator
-* @version 2016/05/16, 13:35:32
+* @version 2016/05/16, 18:07:43
 */
 public class Estudiante implements Concept {
 

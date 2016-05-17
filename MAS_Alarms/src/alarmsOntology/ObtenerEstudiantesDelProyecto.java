@@ -8,7 +8,7 @@ import jade.core.*;
 /**
 * Protege name: ObtenerEstudiantesDelProyecto
 * @author ontology bean generator
-* @version 2016/05/16, 13:35:32
+* @version 2016/05/16, 18:26:57
 */
 public class ObtenerEstudiantesDelProyecto implements Predicate {
 
