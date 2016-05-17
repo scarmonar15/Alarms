@@ -9,7 +9,7 @@ import jade.core.CaseInsensitiveString;
 
 /** file: AlarmsOntology.java
  * @author ontology bean generator
- * @version 2016/05/16, 19:19:29
+ * @version 2016/05/16, 21:13:33
  */
 public class AlarmsOntology extends jade.content.onto.Ontology  {
   //NAME
@@ -25,6 +25,8 @@ public class AlarmsOntology extends jade.content.onto.Ontology  {
    // VOCABULARY
     public static final String ESTUDIANTESDELPROYECTO_PROYECTOS="proyectos";
     public static final String ESTUDIANTESDELPROYECTO="EstudiantesDelProyecto";
+    public static final String OBTENEROBJETOSDEAPRENDIZAJE_ID_OAS="id_OAs";
+    public static final String OBTENEROBJETOSDEAPRENDIZAJE="ObtenerObjetosDeAprendizaje";
     public static final String OBTENERESTUDIANTESCALIFICADOS_ID_ESTUDIANTES="id_estudiantes";
     public static final String OBTENERESTUDIANTESCALIFICADOS="ObtenerEstudiantesCalificados";
     public static final String OBTENERESTUDIANTEDENUNCIADO_ID_ESTUDIANTE="id_estudiante";
@@ -36,6 +38,8 @@ public class AlarmsOntology extends jade.content.onto.Ontology  {
     public static final String OBTENERENTREGACALIFICADA="ObtenerEntregaCalificada";
     public static final String OBTENERESTUDIANTESDELPROYECTO_ID_PROYECTOS="id_proyectos";
     public static final String OBTENERESTUDIANTESDELPROYECTO="ObtenerEstudiantesDelProyecto";
+    public static final String OASRECOMENDADOS_OAS="oas";
+    public static final String OASRECOMENDADOS="OAsRecomendados";
     public static final String ESTUDIANTESDELEQUIPOALTERADO_EQUIPOS="equipos";
     public static final String ESTUDIANTESDELEQUIPOALTERADO="EstudiantesDelEquipoAlterado";
     public static final String OBTENERESTUDIANTESDELEQUIPO_ID_EQUIPOS="id_equipos";
@@ -47,8 +51,22 @@ public class AlarmsOntology extends jade.content.onto.Ontology  {
     public static final String ENTREGACALIFICADA_NOTA="nota";
     public static final String ENTREGACALIFICADA_ENTREGA="entrega";
     public static final String ENTREGACALIFICADA="EntregaCalificada";
+    public static final String OBTENERASESORIAS_ID_ASESORIAS="id_asesorias";
+    public static final String OBTENERASESORIAS="ObtenerAsesorias";
     public static final String OBTENERESTUDIANTESDEENTREGA_ID_ENTREGAS="id_entregas";
     public static final String OBTENERESTUDIANTESDEENTREGA="ObtenerEstudiantesDeEntrega";
+    public static final String ASESORIASPROGRAMADAS_ASESORIAS="asesorias";
+    public static final String ASESORIASPROGRAMADAS="AsesoriasProgramadas";
+    public static final String ASESORIA_FECHA="fecha";
+    public static final String ASESORIA_ASESOR="asesor";
+    public static final String ASESORIA_SALON="salon";
+    public static final String ASESORIA_ID="id";
+    public static final String ASESORIA_ESTUDIANTES="estudiantes";
+    public static final String ASESORIA="Asesoria";
+    public static final String OBJETODEAPRENDIZAJE_NOMBRE="nombre";
+    public static final String OBJETODEAPRENDIZAJE_ID="id";
+    public static final String OBJETODEAPRENDIZAJE_ESTUDIANTES="estudiantes";
+    public static final String OBJETODEAPRENDIZAJE="ObjetoDeAprendizaje";
     public static final String PROYECTO_OBJETIVO="objetivo";
     public static final String PROYECTO_ENTREGAS="entregas";
     public static final String PROYECTO_EQUIPOS="equipos";
@@ -94,14 +112,22 @@ public class AlarmsOntology extends jade.content.onto.Ontology  {
     add(entregaSchema, alarmsOntology.Entrega.class);
     ConceptSchema proyectoSchema = new ConceptSchema(PROYECTO);
     add(proyectoSchema, alarmsOntology.Proyecto.class);
+    ConceptSchema objetoDeAprendizajeSchema = new ConceptSchema(OBJETODEAPRENDIZAJE);
+    add(objetoDeAprendizajeSchema, alarmsOntology.ObjetoDeAprendizaje.class);
+    ConceptSchema asesoriaSchema = new ConceptSchema(ASESORIA);
+    add(asesoriaSchema, alarmsOntology.Asesoria.class);
 
     // adding AgentAction(s)
 
     // adding AID(s)
 
     // adding Predicate(s)
+    PredicateSchema asesoriasProgramadasSchema = new PredicateSchema(ASESORIASPROGRAMADAS);
+    add(asesoriasProgramadasSchema, alarmsOntology.AsesoriasProgramadas.class);
     PredicateSchema obtenerEstudiantesDeEntregaSchema = new PredicateSchema(OBTENERESTUDIANTESDEENTREGA);
     add(obtenerEstudiantesDeEntregaSchema, alarmsOntology.ObtenerEstudiantesDeEntrega.class);
+    PredicateSchema obtenerAsesoriasSchema = new PredicateSchema(OBTENERASESORIAS);
+    add(obtenerAsesoriasSchema, alarmsOntology.ObtenerAsesorias.class);
     PredicateSchema entregaCalificadaSchema = new PredicateSchema(ENTREGACALIFICADA);
     add(entregaCalificadaSchema, alarmsOntology.EntregaCalificada.class);
     PredicateSchema estudiantesDeEntregaSchema = new PredicateSchema(ESTUDIANTESDEENTREGA);
@@ -112,6 +138,8 @@ public class AlarmsOntology extends jade.content.onto.Ontology  {
     add(obtenerEstudiantesDelEquipoSchema, alarmsOntology.ObtenerEstudiantesDelEquipo.class);
     PredicateSchema estudiantesDelEquipoAlteradoSchema = new PredicateSchema(ESTUDIANTESDELEQUIPOALTERADO);
     add(estudiantesDelEquipoAlteradoSchema, alarmsOntology.EstudiantesDelEquipoAlterado.class);
+    PredicateSchema oAsRecomendadosSchema = new PredicateSchema(OASRECOMENDADOS);
+    add(oAsRecomendadosSchema, alarmsOntology.OAsRecomendados.class);
     PredicateSchema obtenerEstudiantesDelProyectoSchema = new PredicateSchema(OBTENERESTUDIANTESDELPROYECTO);
     add(obtenerEstudiantesDelProyectoSchema, alarmsOntology.ObtenerEstudiantesDelProyecto.class);
     PredicateSchema obtenerEntregaCalificadaSchema = new PredicateSchema(OBTENERENTREGACALIFICADA);
@@ -122,6 +150,8 @@ public class AlarmsOntology extends jade.content.onto.Ontology  {
     add(obtenerEstudianteDenunciadoSchema, alarmsOntology.ObtenerEstudianteDenunciado.class);
     PredicateSchema obtenerEstudiantesCalificadosSchema = new PredicateSchema(OBTENERESTUDIANTESCALIFICADOS);
     add(obtenerEstudiantesCalificadosSchema, alarmsOntology.ObtenerEstudiantesCalificados.class);
+    PredicateSchema obtenerObjetosDeAprendizajeSchema = new PredicateSchema(OBTENEROBJETOSDEAPRENDIZAJE);
+    add(obtenerObjetosDeAprendizajeSchema, alarmsOntology.ObtenerObjetosDeAprendizaje.class);
     PredicateSchema estudiantesDelProyectoSchema = new PredicateSchema(ESTUDIANTESDELPROYECTO);
     add(estudiantesDelProyectoSchema, alarmsOntology.EstudiantesDelProyecto.class);
 
@@ -148,19 +178,31 @@ public class AlarmsOntology extends jade.content.onto.Ontology  {
     proyectoSchema.add(PROYECTO_EQUIPOS, equipoSchema, 0, ObjectSchema.UNLIMITED);
     proyectoSchema.add(PROYECTO_ENTREGAS, entregaSchema, 0, ObjectSchema.UNLIMITED);
     proyectoSchema.add(PROYECTO_OBJETIVO, (TermSchema)getSchema(BasicOntology.STRING), ObjectSchema.MANDATORY);
+    objetoDeAprendizajeSchema.add(OBJETODEAPRENDIZAJE_ESTUDIANTES, estudianteSchema, 0, ObjectSchema.UNLIMITED);
+    objetoDeAprendizajeSchema.add(OBJETODEAPRENDIZAJE_ID, (TermSchema)getSchema(BasicOntology.INTEGER), ObjectSchema.MANDATORY);
+    objetoDeAprendizajeSchema.add(OBJETODEAPRENDIZAJE_NOMBRE, (TermSchema)getSchema(BasicOntology.STRING), ObjectSchema.MANDATORY);
+    asesoriaSchema.add(ASESORIA_ESTUDIANTES, estudianteSchema, 0, ObjectSchema.UNLIMITED);
+    asesoriaSchema.add(ASESORIA_ID, (TermSchema)getSchema(BasicOntology.INTEGER), ObjectSchema.MANDATORY);
+    asesoriaSchema.add(ASESORIA_SALON, (TermSchema)getSchema(BasicOntology.STRING), ObjectSchema.MANDATORY);
+    asesoriaSchema.add(ASESORIA_ASESOR, (TermSchema)getSchema(BasicOntology.STRING), ObjectSchema.MANDATORY);
+    asesoriaSchema.add(ASESORIA_FECHA, (TermSchema)getSchema(BasicOntology.STRING), ObjectSchema.MANDATORY);
+    asesoriasProgramadasSchema.add(ASESORIASPROGRAMADAS_ASESORIAS, asesoriaSchema, 1, ObjectSchema.UNLIMITED);
     obtenerEstudiantesDeEntregaSchema.add(OBTENERESTUDIANTESDEENTREGA_ID_ENTREGAS, (TermSchema)getSchema(BasicOntology.INTEGER), 1, ObjectSchema.UNLIMITED);
+    obtenerAsesoriasSchema.add(OBTENERASESORIAS_ID_ASESORIAS, (TermSchema)getSchema(BasicOntology.INTEGER), 1, ObjectSchema.UNLIMITED);
     entregaCalificadaSchema.add(ENTREGACALIFICADA_ENTREGA, entregaSchema, ObjectSchema.MANDATORY);
     entregaCalificadaSchema.add(ENTREGACALIFICADA_NOTA, (TermSchema)getSchema(BasicOntology.FLOAT), ObjectSchema.MANDATORY);
     estudiantesDeEntregaSchema.add(ESTUDIANTESDEENTREGA_ENTREGAS, entregaSchema, 0, ObjectSchema.UNLIMITED);
     estudiantesCalificadosSchema.add(ESTUDIANTESCALIFICADOS_ESTUDIANTES, estudianteSchema, 0, ObjectSchema.UNLIMITED);
     obtenerEstudiantesDelEquipoSchema.add(OBTENERESTUDIANTESDELEQUIPO_ID_EQUIPOS, (TermSchema)getSchema(BasicOntology.INTEGER), 1, ObjectSchema.UNLIMITED);
     estudiantesDelEquipoAlteradoSchema.add(ESTUDIANTESDELEQUIPOALTERADO_EQUIPOS, equipoSchema, 0, ObjectSchema.UNLIMITED);
+    oAsRecomendadosSchema.add(OASRECOMENDADOS_OAS, objetoDeAprendizajeSchema, 1, ObjectSchema.UNLIMITED);
     obtenerEstudiantesDelProyectoSchema.add(OBTENERESTUDIANTESDELPROYECTO_ID_PROYECTOS, (TermSchema)getSchema(BasicOntology.INTEGER), 1, ObjectSchema.UNLIMITED);
     obtenerEntregaCalificadaSchema.add(OBTENERENTREGACALIFICADA_ID_ENTREGA, (TermSchema)getSchema(BasicOntology.INTEGER), ObjectSchema.MANDATORY);
     obtenerEntregaCalificadaSchema.add(OBTENERENTREGACALIFICADA_NOTA, (TermSchema)getSchema(BasicOntology.FLOAT), ObjectSchema.MANDATORY);
     estudianteDenunciadoSchema.add(ESTUDIANTEDENUNCIADO_ESTUDIANTE, estudianteSchema, ObjectSchema.MANDATORY);
     obtenerEstudianteDenunciadoSchema.add(OBTENERESTUDIANTEDENUNCIADO_ID_ESTUDIANTE, (TermSchema)getSchema(BasicOntology.INTEGER), ObjectSchema.MANDATORY);
     obtenerEstudiantesCalificadosSchema.add(OBTENERESTUDIANTESCALIFICADOS_ID_ESTUDIANTES, (TermSchema)getSchema(BasicOntology.STRING), 1, ObjectSchema.UNLIMITED);
+    obtenerObjetosDeAprendizajeSchema.add(OBTENEROBJETOSDEAPRENDIZAJE_ID_OAS, (TermSchema)getSchema(BasicOntology.INTEGER), 1, ObjectSchema.UNLIMITED);
     estudiantesDelProyectoSchema.add(ESTUDIANTESDELPROYECTO_PROYECTOS, proyectoSchema, 1, ObjectSchema.UNLIMITED);
 
     // adding name mappings

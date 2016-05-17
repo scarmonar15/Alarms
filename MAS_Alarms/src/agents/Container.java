@@ -81,12 +81,12 @@ public class Container {
         try {
             //Crear el agente
             AgentController stud = c.createNewAgent("Estudiante", "agents.Student", null);
-            //AgentController teac = c.createNewAgent("Profesor", "agents.Teacher", null);
+            AgentController teac = c.createNewAgent("Profesor", "agents.Teacher", null);
             AgentController team = c.createNewAgent("Equipo", "agents.Team", null);
             
             stud.start();
             team.start();
-            //teac.start();
+            teac.start();
 
             try {
                 Thread.sleep(3000);

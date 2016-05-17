@@ -39,7 +39,7 @@ public class Team extends Agent {
         
         //addBehaviour(tbf.wrap(tickerProyectos));
         //addBehaviour(tbf.wrap(tickerEntregas));
-        addBehaviour(tbf.wrap(tickerNuevosEquipos));
+        //addBehaviour(tbf.wrap(tickerNuevosEquipos));
         //addBehaviour(SenderBehaviour);
         addBehaviour(PingBehaviour);
     }
@@ -220,7 +220,6 @@ public class Team extends Agent {
                                 System.out.println("        Correo: " + estudiante.getCorreo());
                             }
                         }
-
                     } else if (ce instanceof EstudiantesDelProyecto){
                         EstudiantesDelProyecto edp = (EstudiantesDelProyecto) ce;
                         List proyectos = edp.getProyectos();
@@ -321,41 +320,6 @@ public class Team extends Agent {
       }
  
   } //Fin de la clase WaitPingAndReplyBehaviour
-    /*class ObtenerHistorico extends SimpleBehaviour{
-        private boolean finished = false;
-        public ObtenerHistorico(Agent a) {
-            super(a);
-        }
-
-        public void action() {
-            try {
-                AID r = new AID();
-                r.setLocalName("Estudiante");
-                ACLMessage msg = new ACLMessage(ACLMessage.INFORM);
-                msg.setSender(getAID());
-                msg.addReceiver(r);
-                msg.setLanguage(codec.getName());
-                msg.setOntology(ontologia.getName());
-                
-                System.out.print("*********** Ingrese identificador del equipo: ");
-                BufferedReader buff = new BufferedReader(new InputStreamReader(System.in));
-                String respuesta = buff.readLine();
-                
-                ObtenerEstudiantesDelEquipo oee = new ObtenerEstudiantesDelEquipo();
-                oee.setId_equipo(Integer.parseInt(respuesta));
-                getContentManager().fillContent(msg, oee);
-                send(msg);
-                System.out.println("\n *************** Hemos registrado su equipo");
-            } catch (Exception e) {
-                System.out.println(e);
-                finished = true;
-            }
-        }
-
-        public boolean done() {
-            return true;
-        }
-    }*/
     
     private String realizarRequest(String modelo) {
         String url = "http://apimasalarms.herokuapp.com/" + modelo + "/index/differences";

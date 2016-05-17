@@ -78,6 +78,12 @@ public class Student extends Agent {
             case "info_student":
                 url = "http://apimasalarms.herokuapp.com/students/" + id + ".json";
                 break;
+            case "learnings":
+                url = "http://apimasalarms.herokuapp.com/learnings/" + id + "/students";
+                break;
+            case "counselings":
+                url = "http://apimasalarms.herokuapp.com/counselings/" + id + "/students";
+                break;
             default:
                 url = "http://apimasalarms.herokuapp.com/" + modelo + "/" + id + ".json";
                 break;
@@ -247,6 +253,44 @@ public class Student extends Agent {
                                 ede.setEquipos(equipos);
                                 
                                 getContentManager().fillContent(reply, ede);
+                                send(reply);
+                            } else if (ce instanceof ObtenerObjetosDeAprendizaje) {
+                                ACLMessage reply = msg.createReply();
+                                
+                                ObtenerObjetosDeAprendizaje predicado = (ObtenerObjetosDeAprendizaje) ce;
+                                List oas = new ArrayList();
+                                String response;
+                                
+                                //Request
+                                for (int i = 0; i < predicado.getId_OAs().size(); i++) {
+                                    response = realizarRequest("learnings", String.valueOf(predicado.getId_OAs().get(i)));
+                                    ObjetoDeAprendizaje oa = new ObjetoDeAprendizaje(response);
+                                    oas.add(oa);
+                                }
+                                
+                                OAsRecomendados oasr = new OAsRecomendados();
+                                oasr.setOas(oas);
+                                
+                                getContentManager().fillContent(reply, oasr);
+                                send(reply);
+                            } else if (ce instanceof ObtenerAsesorias) {
+                                ACLMessage reply = msg.createReply();
+                                
+                                ObtenerAsesorias predicado = (ObtenerAsesorias) ce;
+                                List asesorias = new ArrayList();
+                                String response;
+                                
+                                //Request
+                                for (int i = 0; i < predicado.getId_asesorias().size(); i++) {
+                                    response = realizarRequest("counselings", String.valueOf(predicado.getId_asesorias().get(i)));
+                                    Asesoria asesoria = new Asesoria(response);
+                                    asesorias.add(asesoria);
+                                }
+                                
+                                AsesoriasProgramadas ap = new AsesoriasProgramadas();
+                                ap.setAsesorias(asesorias);
+                                
+                                getContentManager().fillContent(reply, ap);
                                 send(reply);
                             } else {
                                 // Recibido un INFORM con contenido incorrecto

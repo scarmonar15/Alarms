@@ -8,7 +8,7 @@ import jade.core.*;
 /**
 * Protege name: EntregaCalificada
 * @author ontology bean generator
-* @version 2016/05/16, 19:19:29
+* @version 2016/05/16, 20:34:47
 */
 public class EntregaCalificada implements Predicate {
 
