@@ -1,4 +1,4 @@
-; Mon May 09 22:41:02 COT 2016
+; Mon May 16 22:35:24 COT 2016
 ; 
 ;+ (version "3.4.4")
 ;+ (build "Build 579")
@@ -14,6 +14,14 @@
 ([AID] of  %3AJADE-CLASS
 
 	(%3AJADE-IGNORE TRUE))
+
+([Asesoria] of  %3AJADE-CLASS
+
+	(%3AJADE-IGNORE FALSE))
+
+([AsesoriasProgramadas] of  %3AJADE-CLASS
+
+	(%3AJADE-IGNORE FALSE))
 
 ([Concept] of  %3AJADE-CLASS
 
@@ -43,6 +51,10 @@
 
 	(%3AJADE-IGNORE FALSE))
 
+([EstudiantesDeEntrega] of  %3AJADE-CLASS
+
+	(%3AJADE-IGNORE FALSE))
+
 ([EstudiantesDelEquipoAlterado] of  %3AJADE-CLASS
 
 	(%3AJADE-IGNORE FALSE))
@@ -54,6 +66,18 @@
 ([name] of  %3AJADE-SLOT
 
 	(%3AJADE-UNNAMED-SLOT FALSE))
+
+([OAsRecomendados] of  %3AJADE-CLASS
+
+	(%3AJADE-IGNORE FALSE))
+
+([ObjetoDeAprendizaje] of  %3AJADE-CLASS
+
+	(%3AJADE-IGNORE FALSE))
+
+([ObtenerAsesorias] of  %3AJADE-CLASS
+
+	(%3AJADE-IGNORE FALSE))
 
 ([ObtenerEntregaCalificada] of  %3AJADE-CLASS
 
@@ -67,11 +91,19 @@
 
 	(%3AJADE-IGNORE FALSE))
 
+([ObtenerEstudiantesDeEntrega] of  %3AJADE-CLASS
+
+	(%3AJADE-IGNORE FALSE))
+
 ([ObtenerEstudiantesDelEquipo] of  %3AJADE-CLASS
 
 	(%3AJADE-IGNORE FALSE))
 
 ([ObtenerEstudiantesDelProyecto] of  %3AJADE-CLASS
+
+	(%3AJADE-IGNORE FALSE))
+
+([ObtenerObjetosDeAprendizaje] of  %3AJADE-CLASS
 
 	(%3AJADE-IGNORE FALSE))
 
@@ -81,7 +113,7 @@
 
 ([project+annotation] of  %3APROJECT-ANNOTATION
 
-	(%3ALOCATION "C:\\Users\\johnd\\Documents\\Alarms\\MAS_Alarms\\src")
+	(%3ALOCATION "C:\\Users\\johnd_000\\Documents\\Alarms\\MAS_Alarms\\src")
 	(%3AONTOLOGYNAME "Alarms")
 	(%3APACKAGE "alarmsOntology")
 	(%3ASUPPORT "j2se"))

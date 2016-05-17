@@ -1,4 +1,4 @@
-; Mon May 09 22:41:02 COT 2016
+; Mon May 16 22:35:24 COT 2016
 ; 
 ;+ (version "3.4.4")
 ;+ (build "Build 579")
@@ -27,9 +27,18 @@
 		(type STRING)
 ;+		(cardinality 1 1)
 		(create-accessor read-write))
+	(multislot id_entregas
+		(type INTEGER)
+		(cardinality 1 ?VARIABLE)
+		(create-accessor read-write))
 	(single-slot objetivo
 		(type STRING)
 ;+		(cardinality 1 1)
+		(create-accessor read-write))
+	(multislot oas
+		(type SYMBOL)
+;+		(allowed-parents ObjetoDeAprendizaje)
+		(cardinality 1 ?VARIABLE)
 		(create-accessor read-write))
 	(single-slot %3AJADE-PROPERTIES-GENERATE-BEANS
 		(type SYMBOL)
@@ -44,6 +53,11 @@
 	(multislot resolvers
 		(type SYMBOL)
 ;+		(allowed-parents AID)
+		(create-accessor read-write))
+	(multislot asesorias
+		(type SYMBOL)
+;+		(allowed-parents Asesoria)
+		(cardinality 1 ?VARIABLE)
 		(create-accessor read-write))
 	(single-slot %3ASUPPORT
 		(type STRING)
@@ -62,11 +76,19 @@
 		(type STRING)
 ;+		(cardinality 0 1)
 		(create-accessor read-write))
-	(single-slot id_entrega
+	(multislot id_proyectos
 		(type INTEGER)
+		(cardinality 1 ?VARIABLE)
+		(create-accessor read-write))
+	(single-slot nota
+		(type FLOAT)
 ;+		(cardinality 1 1)
 		(create-accessor read-write))
-	(single-slot id_equipo
+	(multislot id_equipos
+		(type INTEGER)
+		(cardinality 1 ?VARIABLE)
+		(create-accessor read-write))
+	(single-slot id_entrega
 		(type INTEGER)
 ;+		(cardinality 1 1)
 		(create-accessor read-write))
@@ -81,6 +103,10 @@
 	(single-slot enunciado
 		(type STRING)
 ;+		(cardinality 1 1)
+		(create-accessor read-write))
+	(multislot id_OAs
+		(type INTEGER)
+		(cardinality 1 ?VARIABLE)
 		(create-accessor read-write))
 	(single-slot %3AJADE-PROPERTIES-DIRECTORY
 		(type STRING)
@@ -126,6 +152,10 @@
 		(type STRING)
 ;+		(cardinality 0 1)
 		(create-accessor read-write))
+	(multislot id_asesorias
+		(type INTEGER)
+		(cardinality 1 ?VARIABLE)
+		(create-accessor read-write))
 	(single-slot %3AJADE-UNNAMED-SLOT
 		(type SYMBOL)
 		(allowed-values FALSE TRUE)
@@ -154,6 +184,14 @@
 		(type STRING)
 ;+		(cardinality 0 1)
 		(create-accessor read-write))
+	(single-slot salon
+		(type STRING)
+;+		(cardinality 1 1)
+		(create-accessor read-write))
+	(single-slot asesor
+		(type STRING)
+;+		(cardinality 1 1)
+		(create-accessor read-write))
 	(single-slot fecha
 		(type STRING)
 ;+		(cardinality 1 1)
@@ -176,6 +214,10 @@
 		(type STRING)
 ;+		(cardinality 0 1)
 		(create-accessor read-write))
+	(multislot equipos
+		(type SYMBOL)
+;+		(allowed-parents Equipo)
+		(create-accessor read-write))
 	(single-slot nombre
 		(type STRING)
 ;+		(cardinality 1 1)
@@ -184,12 +226,13 @@
 		(type STRING)
 ;+		(cardinality 1 1)
 		(create-accessor read-write))
+	(multislot proyectos
+		(type SYMBOL)
+;+		(allowed-parents Proyecto)
+		(cardinality 1 ?VARIABLE)
+		(create-accessor read-write))
 	(single-slot cedula
 		(type STRING)
-;+		(cardinality 1 1)
-		(create-accessor read-write))
-	(single-slot id_proyecto
-		(type INTEGER)
 ;+		(cardinality 1 1)
 		(create-accessor read-write)))
 
@@ -327,6 +370,10 @@
 		(type INTEGER)
 ;+		(cardinality 1 1)
 		(create-accessor read-write))
+	(multislot equipos
+		(type SYMBOL)
+;+		(allowed-parents Equipo)
+		(create-accessor read-write))
 	(single-slot fecha
 		(type STRING)
 ;+		(cardinality 1 1)
@@ -346,6 +393,10 @@
 	(single-slot id
 		(type INTEGER)
 ;+		(cardinality 1 1)
+		(create-accessor read-write))
+	(multislot equipos
+		(type SYMBOL)
+;+		(allowed-parents Equipo)
 		(create-accessor read-write))
 	(multislot entregas
 		(type SYMBOL)
@@ -369,6 +420,46 @@
 ;+		(cardinality 1 1)
 		(create-accessor read-write))
 	(single-slot descripcion
+		(type STRING)
+;+		(cardinality 1 1)
+		(create-accessor read-write)))
+
+(defclass ObjetoDeAprendizaje
+	(is-a Concept)
+	(role concrete)
+	(multislot estudiantes
+		(type SYMBOL)
+;+		(allowed-parents Estudiante)
+		(create-accessor read-write))
+	(single-slot id
+		(type INTEGER)
+;+		(cardinality 1 1)
+		(create-accessor read-write))
+	(single-slot nombre
+		(type STRING)
+;+		(cardinality 1 1)
+		(create-accessor read-write)))
+
+(defclass Asesoria
+	(is-a Concept)
+	(role concrete)
+	(multislot estudiantes
+		(type SYMBOL)
+;+		(allowed-parents Estudiante)
+		(create-accessor read-write))
+	(single-slot id
+		(type INTEGER)
+;+		(cardinality 1 1)
+		(create-accessor read-write))
+	(single-slot salon
+		(type STRING)
+;+		(cardinality 1 1)
+		(create-accessor read-write))
+	(single-slot asesor
+		(type STRING)
+;+		(cardinality 1 1)
+		(create-accessor read-write))
+	(single-slot fecha
 		(type STRING)
 ;+		(cardinality 1 1)
 		(create-accessor read-write)))
@@ -416,6 +507,10 @@
 	(single-slot id_entrega
 		(type INTEGER)
 ;+		(cardinality 1 1)
+		(create-accessor read-write))
+	(single-slot nota
+		(type FLOAT)
+;+		(cardinality 1 1)
 		(create-accessor read-write)))
 
 (defclass EntregaCalificada
@@ -425,45 +520,91 @@
 		(type SYMBOL)
 ;+		(allowed-parents Entrega)
 ;+		(cardinality 1 1)
+		(create-accessor read-write))
+	(single-slot nota
+		(type FLOAT)
+;+		(cardinality 1 1)
 		(create-accessor read-write)))
 
 (defclass ObtenerEstudiantesDelEquipo
 	(is-a Predicate)
 	(role concrete)
-	(single-slot id_equipo
+	(multislot id_equipos
 		(type INTEGER)
-;+		(cardinality 1 1)
+		(cardinality 1 ?VARIABLE)
 		(create-accessor read-write)))
 
 (defclass EstudiantesDelEquipoAlterado
 	(is-a Predicate)
 	(role concrete)
-	(multislot estudiantes
+	(multislot equipos
 		(type SYMBOL)
-;+		(allowed-parents Estudiante)
+;+		(allowed-parents Equipo)
 		(create-accessor read-write)))
 
 (defclass ObtenerEstudiantesDelProyecto
 	(is-a Predicate)
 	(role concrete)
-	(single-slot id_equipo
+	(multislot id_proyectos
 		(type INTEGER)
-;+		(cardinality 1 1)
-		(create-accessor read-write))
-	(single-slot id_proyecto
-		(type INTEGER)
-;+		(cardinality 1 1)
+		(cardinality 1 ?VARIABLE)
 		(create-accessor read-write)))
 
 (defclass EstudiantesDelProyecto
 	(is-a Predicate)
 	(role concrete)
-	(multislot estudiantes
-		(type SYMBOL)
-;+		(allowed-parents Estudiante)
-		(create-accessor read-write))
-	(single-slot proyecto
+	(multislot proyectos
 		(type SYMBOL)
 ;+		(allowed-parents Proyecto)
-;+		(cardinality 0 1)
+		(cardinality 1 ?VARIABLE)
+		(create-accessor read-write)))
+
+(defclass ObtenerEstudiantesDeEntrega
+	(is-a Predicate)
+	(role concrete)
+	(multislot id_entregas
+		(type INTEGER)
+		(cardinality 1 ?VARIABLE)
+		(create-accessor read-write)))
+
+(defclass EstudiantesDeEntrega
+	(is-a Predicate)
+	(role concrete)
+	(multislot entregas
+		(type SYMBOL)
+;+		(allowed-parents Entrega)
+		(create-accessor read-write)))
+
+(defclass ObtenerObjetosDeAprendizaje
+	(is-a Predicate)
+	(role concrete)
+	(multislot id_OAs
+		(type INTEGER)
+		(cardinality 1 ?VARIABLE)
+		(create-accessor read-write)))
+
+(defclass OAsRecomendados
+	(is-a Predicate)
+	(role concrete)
+	(multislot oas
+		(type SYMBOL)
+;+		(allowed-parents ObjetoDeAprendizaje)
+		(cardinality 1 ?VARIABLE)
+		(create-accessor read-write)))
+
+(defclass ObtenerAsesorias
+	(is-a Predicate)
+	(role concrete)
+	(multislot id_asesorias
+		(type INTEGER)
+		(cardinality 1 ?VARIABLE)
+		(create-accessor read-write)))
+
+(defclass AsesoriasProgramadas
+	(is-a Predicate)
+	(role concrete)
+	(multislot asesorias
+		(type SYMBOL)
+;+		(allowed-parents Asesoria)
+		(cardinality 1 ?VARIABLE)
 		(create-accessor read-write)))
