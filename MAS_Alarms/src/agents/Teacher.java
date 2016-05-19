@@ -67,8 +67,10 @@ public class Teacher extends Agent {
             String[] aux_array = response.split(",");
             List oas = new ArrayList();
             
-            for (String id : aux_array) {
-                oas.add(Integer.parseInt(id));
+            if (response.length() > 0) {
+                for (String id : aux_array) {
+                    oas.add(Integer.parseInt(id));
+                }
             }
             
             if (oas.isEmpty()) {
@@ -111,8 +113,10 @@ public class Teacher extends Agent {
             String[] aux_array = response.split(",");
             List asesorias = new ArrayList();
             
-            for (String id : aux_array) {
-                asesorias.add(Integer.parseInt(id));
+            if (response.length() > 0) {
+               for (String id : aux_array) {
+                    asesorias.add(Integer.parseInt(id));
+                } 
             }
             
             if (asesorias.isEmpty()) {

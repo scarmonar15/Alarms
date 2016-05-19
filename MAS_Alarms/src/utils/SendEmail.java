@@ -48,7 +48,7 @@ public class SendEmail {
  
 	// Enter your correct gmail UserID and Password
 	// if you have 2FA enabled then provide App Specific Password
-	transport.connect("smtp.gmail.com", "alarms.sma", "alarms.sma");
+	transport.connect("smtp.gmail.com", "alarms.sma", "alarms-sma");
 	transport.sendMessage(generateMailMessage, generateMailMessage.getAllRecipients());
 	transport.close();
     }

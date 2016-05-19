@@ -39,7 +39,7 @@ public class Team extends Agent {
         
         //addBehaviour(tbf.wrap(tickerProyectos));
         //addBehaviour(tbf.wrap(tickerEntregas));
-        addBehaviour(tbf.wrap(tickerNuevosEquipos));
+        //addBehaviour(tbf.wrap(tickerNuevosEquipos));
         addBehaviour(PingBehaviour);
     }
     
@@ -57,8 +57,10 @@ public class Team extends Agent {
             String[] aux_array = response.split(",");
             List proyectos = new ArrayList();
             
-            for (String id : aux_array) {
-                proyectos.add(Integer.parseInt(id));
+            if (response.length() > 0) {
+                for (String id : aux_array) {
+                    proyectos.add(Integer.parseInt(id));
+                }
             }
             
             if (proyectos.isEmpty()) {
@@ -101,8 +103,10 @@ public class Team extends Agent {
             String[] aux_array = response.split(",");
             List entregas = new ArrayList();
             
-            for (String id : aux_array) {
-                entregas.add(Integer.parseInt(id));
+            if (response.length() > 0) {
+                for (String id : aux_array) {
+                    entregas.add(Integer.parseInt(id));
+                }
             }
             
             if (entregas.isEmpty()) {
@@ -308,14 +312,12 @@ public class Team extends Agent {
             }
 
              }
-             catch (jade.content.lang.Codec.CodecException ce) {
+             catch (jade.content.lang.Codec.CodecException | jade.content.onto.OntologyException ce) {
                    System.out.println(ce);
-            }
-            catch (jade.content.onto.OntologyException oe) {
-                System.out.println(oe);
             }
          }
  
+      @Override
       public boolean done() {
         return finished;
       }
