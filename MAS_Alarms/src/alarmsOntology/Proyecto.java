@@ -34,6 +34,12 @@ public class Proyecto implements Concept {
         
         setEquipos(nuevos_equipos);
     }
+    
+    public Proyecto(JsonObject json_object) {
+        setId(json_object.get("id").getAsInt());
+        setTitulo(json_object.get("title").getAsString());
+        setObjetivo(json_object.get("description").getAsString());
+    }
    /**
 * Protege name: titulo
    */

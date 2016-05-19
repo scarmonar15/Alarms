@@ -4,6 +4,9 @@
  */
 package agents;
 import alarmsOntology.*;
+import com.google.gson.JsonArray;
+import com.google.gson.JsonObject;
+import com.google.gson.JsonParser;
 import jade.core.*;
 import jade.core.behaviours.*;
 import jade.lang.acl.*;
@@ -14,6 +17,7 @@ import jade.content.onto.*;
 import jade.util.leap.ArrayList;
 import jade.util.leap.List;
 import java.io.BufferedReader;
+import java.io.IOException;
 import java.io.InputStreamReader;
 import java.net.HttpURLConnection;
 import java.net.URL;
@@ -31,6 +35,16 @@ public class Team extends Agent {
     protected void setup() {
         getContentManager().registerLanguage(codec);
         getContentManager().registerOntology(ontologia);
+        Object[] args = getArguments();
+
+        if (args != null) {
+            if (args[0].equals("SimularFecha")) {
+                System.out.println("Simulando Fecha en Equipo");
+                
+                PlazoEntregaCumplido pec = new PlazoEntregaCumplido(this, (String) args[1]);
+                addBehaviour(pec);
+            }
+        }
 
         RecibirDesempegnoHistorico PingBehaviour = new RecibirDesempegnoHistorico(this);
         MirarNuevosProyectos tickerProyectos = new MirarNuevosProyectos(this, 5000);
@@ -51,7 +65,7 @@ public class Team extends Agent {
         @Override
         public void onTick(){
             //REQUEST
-            String response = realizarRequest("projects");
+            String response = realizarRequest("projects", null);
             
             response = response.substring(1, response.length() - 1);
             String[] aux_array = response.split(",");
@@ -63,9 +77,7 @@ public class Team extends Agent {
                 }
             }
             
-            if (proyectos.isEmpty()) {
-                System.out.println("No hay nuevos proyectos!");
-            } else {
+            if (!proyectos.isEmpty()) {
                 AID r = new AID();
                 r.setLocalName("Estudiante");
 
@@ -97,7 +109,7 @@ public class Team extends Agent {
         @Override
         public void onTick(){
             //REQUEST
-            String response = realizarRequest("assignments");
+            String response = realizarRequest("assignments", null);
 
             response = response.substring(1, response.length() - 1);
             String[] aux_array = response.split(",");
@@ -109,9 +121,7 @@ public class Team extends Agent {
                 }
             }
             
-            if (entregas.isEmpty()) {
-                System.out.println("No hay nuevas entregas!");
-            } else {
+            if (!entregas.isEmpty()) {
                 AID r = new AID();
                 r.setLocalName("Estudiante");
 
@@ -142,7 +152,7 @@ public class Team extends Agent {
         @Override
         public void onTick(){
             //REQUEST
-            String response = realizarRequest("teams");
+            String response = realizarRequest("teams", null);
 
             response = response.substring(1, response.length() - 1);
             String[] aux_array = response.split(",");
@@ -154,9 +164,7 @@ public class Team extends Agent {
                 }
             }
             
-            if (equipos.isEmpty()) {
-                System.out.println("No hay nuevos equipos!");
-            } else {
+            if (!equipos.isEmpty()) {
                 AID r = new AID();
                 r.setLocalName("Estudiante");
 
@@ -177,6 +185,72 @@ public class Team extends Agent {
 
                 send(msg);
             }
+        }
+    }
+    
+    class PlazoEntregaCumplido extends SimpleBehaviour {
+        private boolean finished = false;
+        private String fecha;
+ 
+        public PlazoEntregaCumplido(Agent a, String fecha) {
+            super(a);
+            this.fecha = fecha;
+        }
+        
+        @Override
+        public void action() {
+            String response = realizarRequest("assignments_date", this.fecha);
+
+            JsonArray entregas = new JsonParser().parse(response).getAsJsonArray();
+            
+            if (entregas.size() > 0) {
+                System.out.println("Ha llegado la fecha limite para las siguientes entregas:");
+            
+                for (int i = 0; i < entregas.size(); i++) {
+                    JsonObject entrega_object = entregas.get(i).getAsJsonObject();
+                    Entrega entrega = new Entrega(entrega_object);
+                    Proyecto proyecto = entrega.getProyecto();
+                    List equipos = entrega.getEquipos();
+                            
+                    System.out.println("************************************************************");
+                    System.out.println("Entrega #" + entrega.getId());
+                    System.out.println("    ID Proyecto: " + proyecto.getId());
+                    System.out.println("    Titulo del Proyecto: " + proyecto.getTitulo());
+                    System.out.println("    Enunciado: " + entrega.getEnunciado());
+                    System.out.println("    Fecha limite: " + entrega.getFecha());
+                    System.out.println("    Lista de Grupos:");
+                            
+                    for (int j = 0; j < equipos.size(); j++) {
+                        Equipo equipo = (Equipo) equipos.get(j);
+                        List estudiantes = equipo.getEstudiantes();
+                                
+                        System.out.println("        Equipo #" + equipo.getId());
+                                
+                        for (int k = 0; k < estudiantes.size(); k++) {
+                            Estudiante estudiante = (Estudiante) estudiantes.get(k);
+                                    
+                            System.out.println("            Estudiante con cedula " + estudiante.getCedula());
+                            System.out.println("                Nombre: " + estudiante.getNombre() + " " + estudiante.getApellido());
+                            System.out.println("                Correo: " + estudiante.getCorreo());
+                        }
+                    }
+                }
+            } else {
+                System.out.println("No hay entregas para este día!");
+            }
+            
+            
+            doDelete();
+            try {
+                new Container().mainMenu();
+            } catch (IOException ex) {
+                Logger.getLogger(Team.class.getName()).log(Level.SEVERE, null, ex);
+            }
+        }
+        
+        @Override
+        public boolean done() {
+            return finished;
         }
     }
     // Clase que describe el comportamiento que permite recibir un mensaje
@@ -324,8 +398,18 @@ public class Team extends Agent {
  
   } //Fin de la clase WaitPingAndReplyBehaviour
     
-    private String realizarRequest(String modelo) {
-        String url = "http://apimasalarms.herokuapp.com/" + modelo + "/index/differences";
+    private String realizarRequest(String modelo, String date) {
+        String url;
+        
+        switch (modelo) {
+            case "assignments_date":
+                url = "http://apimasalarms.herokuapp.com/assignments/index/by_date?d=" + date ;
+                break;
+            default:
+                url = "http://apimasalarms.herokuapp.com/" + modelo + "/index/differences";
+                break;
+        }
+        
         StringBuilder response = new StringBuilder();
         
         try {

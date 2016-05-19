@@ -37,10 +37,12 @@ public class Teacher extends Agent {
             if (args[0].equals("Denunciar")){
                 ObtenerAlDenunciado SenderBehaviour = new ObtenerAlDenunciado(this);
                 addBehaviour(SenderBehaviour);
-            }
-            if (args[0].equals("Calificar")) {
+            } else if (args[0].equals("Calificar")) {
                 ObtenerLosCalificados CalificadosBehaviour = new ObtenerLosCalificados(this);
                 addBehaviour(CalificadosBehaviour);
+            } else if (args[0].equals("SimularFecha")) {
+                DetectarIncumplimiento IncumplimientoBehaviour = new DetectarIncumplimiento(this, (String) args[1]);
+                addBehaviour(IncumplimientoBehaviour);
             }
         }
         
@@ -142,6 +144,26 @@ public class Teacher extends Agent {
 
                 send(msg);
             }
+        }
+    }
+    
+    class DetectarIncumplimiento extends SimpleBehaviour {
+        private boolean finished = false;
+        private String fecha;
+ 
+        public DetectarIncumplimiento(Agent a, String fecha) {
+            super(a);
+            this.fecha = fecha;
+        }
+        
+        @Override
+        public void action() {
+            
+        }
+        
+        @Override
+        public boolean done() {
+            return finished;
         }
     }
     

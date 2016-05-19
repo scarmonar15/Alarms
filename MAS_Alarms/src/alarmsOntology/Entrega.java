@@ -24,6 +24,30 @@ public class Entrega implements Concept {
         setFecha(json_object.get("limit_date").getAsString());
         setEnunciado(json_object.get("description").getAsString());
         
+        JsonObject project = json_object.get("project").getAsJsonObject();
+        Proyecto proyecto = new Proyecto(project);
+        setProyecto(proyecto);
+        
+        JsonArray teams_array = json_object.get("teams").getAsJsonArray();
+        List nuevos_equipos = new ArrayList();
+        
+        for (JsonElement team : teams_array) {
+            Equipo nuevo_equipo = new Equipo(team.getAsJsonObject());
+            nuevos_equipos.add(nuevo_equipo);
+        }
+        
+        setEquipos(nuevos_equipos);
+    }
+    
+    public Entrega(JsonObject json_object) {
+        setId(Integer.parseInt(json_object.get("id").getAsString()));
+        setFecha(json_object.get("limit_date").getAsString());
+        setEnunciado(json_object.get("description").getAsString());
+        
+        JsonObject project = json_object.get("project").getAsJsonObject();
+        Proyecto proyecto = new Proyecto(project);
+        setProyecto(proyecto);
+        
         JsonArray teams_array = json_object.get("teams").getAsJsonArray();
         List nuevos_equipos = new ArrayList();
         
