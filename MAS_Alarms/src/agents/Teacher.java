@@ -1,7 +1,6 @@
 package agents;
 
 import alarmsOntology.*;
-import com.sun.mail.smtp.SMTPTransport;
 import jade.core.*;
 import jade.core.behaviours.*;
 import jade.lang.acl.*;
@@ -16,16 +15,10 @@ import java.io.IOException;
 import java.io.InputStreamReader;
 import java.net.HttpURLConnection;
 import java.net.URL;
-import java.security.Security;
-import java.util.Date;
-import java.util.Properties;
 import java.util.logging.Level;
 import java.util.logging.Logger;
-import javax.mail.Message;
 import javax.mail.MessagingException;
-import javax.mail.Session;
-import javax.mail.internet.InternetAddress;
-import javax.mail.internet.MimeMessage;
+import utils.SendEmail;
  
 public class Teacher extends Agent {
  
@@ -178,16 +171,21 @@ public class Teacher extends Agent {
                             ContentElement ce = getContentManager().extractContent(msg);
                             
                             if (ce instanceof EstudianteDenunciado) {
-                                // Recibido un INFORM con contenido correcto
                                 EstudianteDenunciado ed = (EstudianteDenunciado) ce;
                                 Estudiante e = ed.getEstudiante();
                                 
-                                System.out.println("Denuncia recibida");
-                                System.out.println("Se ha hecho una denuncia de un estudiante"
+                                String asunto = "Estudiante Denunciado!";
+                                
+                                String mensaje = "Se ha hecho una denuncia de un estudiante"
                                         + " con cédula: " + e.getCedula()
                                         + " llamado " + e.getNombre() + " " + e.getApellido()
-                                        + " con correo" + " " + e.getCorreo() + "\n"
-                                );
+                                        + " con correo" + " " + e.getCorreo() + "\n";
+                                
+                                try {
+                                    SendEmail.generateAndSendEmail(asunto, e.getCorreo(), mensaje);
+                                } catch (MessagingException ex) {
+                                    Logger.getLogger(Teacher.class.getName()).log(Level.SEVERE, null, ex);
+                                }
                                 
                                 doDelete();
                                 new Container().mainMenu();

@@ -35,11 +35,11 @@ public class Team extends Agent {
         RecibirDesempegnoHistorico PingBehaviour = new RecibirDesempegnoHistorico(this);
         MirarNuevosProyectos tickerProyectos = new MirarNuevosProyectos(this, 5000);
         MirarNuevasEntregas tickerEntregas = new MirarNuevasEntregas(this, 5000);
-        MirarNuevosEquipos tickerNuevosEquipos = new MirarNuevosEquipos(this, 15000);
+        MirarNuevosEquipos tickerNuevosEquipos = new MirarNuevosEquipos(this, 5000);
         
         //addBehaviour(tbf.wrap(tickerProyectos));
         //addBehaviour(tbf.wrap(tickerEntregas));
-        //addBehaviour(tbf.wrap(tickerNuevosEquipos));
+        addBehaviour(tbf.wrap(tickerNuevosEquipos));
         addBehaviour(PingBehaviour);
     }
     
@@ -144,8 +144,10 @@ public class Team extends Agent {
             String[] aux_array = response.split(",");
             List equipos = new ArrayList();
             
-            for (String id : aux_array) {
-                equipos.add(Integer.parseInt(id));
+            if (response.length() > 0) {
+                for (String id : aux_array) {
+                    equipos.add(Integer.parseInt(id));
+                }
             }
             
             if (equipos.isEmpty()) {
