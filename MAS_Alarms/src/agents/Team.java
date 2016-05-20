@@ -23,6 +23,8 @@ import java.net.HttpURLConnection;
 import java.net.URL;
 import java.util.logging.Level;
 import java.util.logging.Logger;
+import javax.mail.MessagingException;
+import utils.SendEmail;
  
 public class Team extends Agent {
  
@@ -46,7 +48,7 @@ public class Team extends Agent {
             }
         }
 
-        RecibirDesempegnoHistorico PingBehaviour = new RecibirDesempegnoHistorico(this);
+        RecibirMensajes PingBehaviour = new RecibirMensajes(this);
         MirarNuevosProyectos tickerProyectos = new MirarNuevosProyectos(this, 5000);
         MirarNuevasEntregas tickerEntregas = new MirarNuevasEntregas(this, 5000);
         MirarNuevosEquipos tickerNuevosEquipos = new MirarNuevosEquipos(this, 5000);
@@ -204,41 +206,42 @@ public class Team extends Agent {
             JsonArray entregas = new JsonParser().parse(response).getAsJsonArray();
             
             if (entregas.size() > 0) {
-                System.out.println("Ha llegado la fecha limite para las siguientes entregas:");
+                String mensaje, asunto;
             
                 for (int i = 0; i < entregas.size(); i++) {
                     JsonObject entrega_object = entregas.get(i).getAsJsonObject();
                     Entrega entrega = new Entrega(entrega_object);
                     Proyecto proyecto = entrega.getProyecto();
                     List equipos = entrega.getEquipos();
+                    
+                    asunto = "Llegada de fecha limite para la Entrega #" + entrega.getId();
                             
-                    System.out.println("************************************************************");
-                    System.out.println("Entrega #" + entrega.getId());
-                    System.out.println("    ID Proyecto: " + proyecto.getId());
-                    System.out.println("    Titulo del Proyecto: " + proyecto.getTitulo());
-                    System.out.println("    Enunciado: " + entrega.getEnunciado());
-                    System.out.println("    Fecha limite: " + entrega.getFecha());
-                    System.out.println("    Lista de Grupos:");
+                    mensaje = "Ha llegado la fecha limite para la siguientes entrega: \n" +
+                              "Entrega #" + entrega.getId() + "\n" +
+                              "    ID Proyecto: " + proyecto.getId() + "\n" +
+                              "    Titulo del Proyecto: " + proyecto.getTitulo() + "\n" +
+                              "    Enunciado: " + entrega.getEnunciado() + "\n" +
+                              "    Fecha limite: " + entrega.getFecha() +  "\n\n" +
+                              "Por favor entregarla hoy a mas tardar!";
                             
                     for (int j = 0; j < equipos.size(); j++) {
                         Equipo equipo = (Equipo) equipos.get(j);
                         List estudiantes = equipo.getEstudiantes();
                                 
-                        System.out.println("        Equipo #" + equipo.getId());
-                                
                         for (int k = 0; k < estudiantes.size(); k++) {
                             Estudiante estudiante = (Estudiante) estudiantes.get(k);
                                     
-                            System.out.println("            Estudiante con cedula " + estudiante.getCedula());
-                            System.out.println("                Nombre: " + estudiante.getNombre() + " " + estudiante.getApellido());
-                            System.out.println("                Correo: " + estudiante.getCorreo());
+                            try {
+                                SendEmail.generateAndSendEmail(asunto, estudiante.getCorreo(), mensaje);
+                            } catch (MessagingException ex) {
+                                Logger.getLogger(Team.class.getName()).log(Level.SEVERE, null, ex);
+                            }
                         }
                     }
                 }
             } else {
                 System.out.println("No hay entregas para este día!");
             }
-            
             
             doDelete();
             try {
@@ -255,148 +258,143 @@ public class Team extends Agent {
     }
     // Clase que describe el comportamiento que permite recibir un mensaje
     // y contestarlo
-    class RecibirDesempegnoHistorico extends SimpleBehaviour {
-      private boolean finished = false;
+    class RecibirMensajes extends SimpleBehaviour {
+        private boolean finished = false;
  
-      public RecibirDesempegnoHistorico(Agent a) {
-        super(a);
-      }
+        public RecibirMensajes(Agent a) {
+            super(a);
+        }
  
-      @Override
-      public void action() {
-        MessageTemplate mt = MessageTemplate.and(
-                MessageTemplate.MatchLanguage(codec.getName()),
-                MessageTemplate.MatchOntology(ontologia.getName()));
+        @Override
+        public void action() {
+            MessageTemplate mt = MessageTemplate.and(
+                    MessageTemplate.MatchLanguage(codec.getName()),
+                    MessageTemplate.MatchOntology(ontologia.getName())
+            );
+            
             ACLMessage  msg = blockingReceive(mt);
+            
             try {
-
-                if(msg != null){
-                if(msg.getPerformative() == ACLMessage.NOT_UNDERSTOOD){
-                    System.out.println("Mensaje NOT UNDERSTOOD recibido");
-                }
-                else{
-                    if(msg.getPerformative()== ACLMessage.INFORM){
-                    ContentElement ce = getContentManager().extractContent(msg);
-                    if (ce instanceof EstudiantesDelEquipoAlterado){
-                        //Recibido un INFORM con contenido correcto
-                        EstudiantesDelEquipoAlterado edea = (EstudiantesDelEquipoAlterado) ce;
-                        List equipos = edea.getEquipos();
-                        
-                        System.out.println("*********** Se han agregado los siguientes nuevos equipos:");
-                        
-                        for (int i = 0; i < equipos.size(); i++) {
-                            Equipo equipo = (Equipo) equipos.get(i);
-                            List estudiantes = equipo.getEstudiantes();
-                            
-                            System.out.println("************************************************************");
-                            System.out.println("Equipo #" + equipo.getId());
- 
-                            for (int j = 0; j < estudiantes.size(); j++) {
-                                Estudiante estudiante = (Estudiante) estudiantes.get(j);
-                                    
-                                System.out.println("    Estudiante con cedula " + estudiante.getCedula());
-                                System.out.println("        Nombre: " + estudiante.getNombre() + " " + estudiante.getApellido());
-                                System.out.println("        Correo: " + estudiante.getCorreo());
-                            }
-                        }
-                    } else if (ce instanceof EstudiantesDelProyecto){
-                        EstudiantesDelProyecto edp = (EstudiantesDelProyecto) ce;
-                        List proyectos = edp.getProyectos();
-                        
-                        System.out.println("*********** Se han agregado los siguientes nuevos proyectos:");
-                        
-                        for (int i = 0; i < proyectos.size(); i++) {
-                            Proyecto proyecto = (Proyecto) proyectos.get(i);
-                            List equipos = proyecto.getEquipos();
-                            
-                            System.out.println("************************************************************");
-                            System.out.println("Proyecto #" + proyecto.getId());
-                            System.out.println("    Nombre: " + proyecto.getTitulo());
-                            System.out.println("    Objetivo: " + proyecto.getObjetivo());
-                            System.out.println("    Lista de Grupos:");
-                            
-                            for (int j = 0; j < equipos.size(); j++) {
-                                Equipo equipo = (Equipo) equipos.get(j);
-                                List estudiantes = equipo.getEstudiantes();
-                                
-                                System.out.println("        Equipo #" + equipo.getId());
-                                
-                                for (int k = 0; k < estudiantes.size(); k++) {
-                                    Estudiante estudiante = (Estudiante) estudiantes.get(k);
-                                    
-                                    System.out.println("            Estudiante con cedula " + estudiante.getCedula());
-                                    System.out.println("                Nombre: " + estudiante.getNombre() + " " + estudiante.getApellido());
-                                    System.out.println("                Correo: " + estudiante.getCorreo());
-                                }
-                            }
-                        }
-                        
-                        System.out.println("************************************************************");
-                    } else if (ce instanceof EstudiantesDeEntrega){
-                        EstudiantesDeEntrega edp = (EstudiantesDeEntrega) ce;
-                        List entregas = edp.getEntregas();
-                        
-                        System.out.println("*********** Se han agregado las siguientes nuevas entregas:");
-                        
-                        for (int i = 0; i < entregas.size(); i++) {
-                            Entrega entrega = (Entrega) entregas.get(i);
-                            List equipos = entrega.getEquipos();
-                            
-                            System.out.println("************************************************************");
-                            System.out.println("Entrega #" + entrega.getId());
-                            System.out.println("    Enunciado: " + entrega.getEnunciado());
-                            System.out.println("    Fecha limite: " + entrega.getFecha());
-                            System.out.println("    Lista de Grupos:");
-                            
-                            for (int j = 0; j < equipos.size(); j++) {
-                                Equipo equipo = (Equipo) equipos.get(j);
-                                List estudiantes = equipo.getEstudiantes();
-                                
-                                System.out.println("        Equipo #" + equipo.getId());
-                                
-                                for (int k = 0; k < estudiantes.size(); k++) {
-                                    Estudiante estudiante = (Estudiante) estudiantes.get(k);
-                                    
-                                    System.out.println("            Estudiante con cedula " + estudiante.getCedula());
-                                    System.out.println("                Nombre: " + estudiante.getNombre() + " " + estudiante.getApellido());
-                                    System.out.println("                Correo: " + estudiante.getCorreo());
-                                }
-                            }
-                        }
-                        
-                        System.out.println("************************************************************");
+                if (msg == null) {
+                    System.out.println("No message received");
+                } else {
+                    if (msg.getPerformative() == ACLMessage.NOT_UNDERSTOOD) {
+                        System.out.println("Mensaje NOT UNDERSTOOD recibido");
                     } else {
-                        // Recibido un INFORM con contenido incorrecto
-                        ACLMessage reply = msg.createReply();
-                        reply.setPerformative(ACLMessage.NOT_UNDERSTOOD);
-                        reply.setContent("( UnexpectedContent (expected ping))");
-                        send(reply);
+                        if (msg.getPerformative()== ACLMessage.INFORM) {
+                            ContentElement ce = getContentManager().extractContent(msg);
+                            
+                            if (ce instanceof EstudiantesDelEquipoAlterado) {
+                                EstudiantesDelEquipoAlterado edea = (EstudiantesDelEquipoAlterado) ce;
+                                List equipos = edea.getEquipos();
+                                
+                                System.out.println("*********** Se han agregado los siguientes nuevos equipos:");
+                                
+                                for (int i = 0; i < equipos.size(); i++) {
+                                    Equipo equipo = (Equipo) equipos.get(i);
+                                    List estudiantes = equipo.getEstudiantes();
+                                    
+                                    System.out.println("************************************************************");
+                                    System.out.println("Equipo #" + equipo.getId());
+                                    
+                                    for (int j = 0; j < estudiantes.size(); j++) {
+                                        Estudiante estudiante = (Estudiante) estudiantes.get(j);
+                                        
+                                        System.out.println("    Estudiante con cedula " + estudiante.getCedula());
+                                        System.out.println("        Nombre: " + estudiante.getNombre() + " " + estudiante.getApellido());
+                                        System.out.println("        Correo: " + estudiante.getCorreo());
+                                    }
+                                }
+                            } else if (ce instanceof EstudiantesDelProyecto){
+                                EstudiantesDelProyecto edp = (EstudiantesDelProyecto) ce;
+                                List proyectos = edp.getProyectos();
+                                
+                                for (int i = 0; i < proyectos.size(); i++) {
+                                    Proyecto proyecto = (Proyecto) proyectos.get(i);
+                                    List equipos = proyecto.getEquipos();
+                                    String asunto, mensaje;
+                                    
+                                    asunto = "Proyecto \"" + proyecto.getTitulo() + "\" asignado!";
+                            
+                                    mensaje = "Se le ha asignado el siguiente proyecto a su equipo: \n" +
+                                              "Proyecto #" + proyecto.getId() + "\n" +
+                                              "    Nombre: " + proyecto.getTitulo() + "\n" +
+                                              "    Objetivo: " + proyecto.getObjetivo();
+                                    
+                                    for (int j = 0; j < equipos.size(); j++) {
+                                        Equipo equipo = (Equipo) equipos.get(j);
+                                        List estudiantes = equipo.getEstudiantes();
+                                        
+                                        for (int k = 0; k < estudiantes.size(); k++) {
+                                            Estudiante estudiante = (Estudiante) estudiantes.get(k);
+                                            
+                                            try {
+                                                SendEmail.generateAndSendEmail(asunto, estudiante.getCorreo(), mensaje);
+                                            } catch (MessagingException ex) {
+                                                Logger.getLogger(Team.class.getName()).log(Level.SEVERE, null, ex);
+                                            }
+                                        }
+                                    }
+                                }
+                            } else if (ce instanceof EstudiantesDeEntrega){
+                                EstudiantesDeEntrega edp = (EstudiantesDeEntrega) ce;
+                                List entregas = edp.getEntregas();
+                                
+                                for (int i = 0; i < entregas.size(); i++) {
+                                    Entrega entrega = (Entrega) entregas.get(i);
+                                    Proyecto proyecto = entrega.getProyecto();
+                                    List equipos = entrega.getEquipos();
+                                    String asunto, mensaje;
+                                    
+                                    asunto = "Entrega \"" + entrega.getEnunciado() + "\" asignada!";
+                            
+                                    mensaje = "Entrega #" + entrega.getId() + "\n" +
+                                              "    ID Proyecto: " + proyecto.getId() + "\n" +
+                                              "    Titulo del Proyecto: " + proyecto.getTitulo() + "\n" +
+                                              "    Enunciado: " + entrega.getEnunciado() + "\n" +
+                                              "    Fecha limite: " + entrega.getFecha();
+                                    
+                                    for (int j = 0; j < equipos.size(); j++) {
+                                        Equipo equipo = (Equipo) equipos.get(j);
+                                        List estudiantes = equipo.getEstudiantes();
+                                        
+                                        for (int k = 0; k < estudiantes.size(); k++) {
+                                            Estudiante estudiante = (Estudiante) estudiantes.get(k);
+                                            
+                                            try {
+                                                SendEmail.generateAndSendEmail(asunto, estudiante.getCorreo(), mensaje);
+                                            } catch (MessagingException ex) {
+                                                Logger.getLogger(Team.class.getName()).log(Level.SEVERE, null, ex);
+                                            }
+                                        }
+                                    }
+                                }
+                            } else {
+                                ACLMessage reply = msg.createReply();
+                                reply.setPerformative(ACLMessage.NOT_UNDERSTOOD);
+                                reply.setContent("( UnexpectedContent (expected ping))");
+                                
+                                send(reply);
+                            }
+                        } else {
+                            ACLMessage reply = msg.createReply();
+                            reply.setPerformative(ACLMessage.NOT_UNDERSTOOD);
+                            reply.setContent("( (Unexpected-act "+ACLMessage.getPerformative(msg.getPerformative())+")( expected (inform)))");
+                            
+                            send(reply);
+                        }
                     }
                 }
-                else {
-                    // Recibida una performativa incorrecta
-                    ACLMessage reply = msg.createReply();
-                    reply.setPerformative(ACLMessage.NOT_UNDERSTOOD);
-                    reply.setContent("( (Unexpected-act "+ACLMessage.getPerformative(msg.getPerformative())+")( expected (inform)))");
-                    send(reply);
-                }
+            } catch (jade.content.lang.Codec.CodecException | jade.content.onto.OntologyException ce) {
+                System.out.println(ce);
             }
-            }else{
-            //System.out.println("No message received");
-            }
-
-             }
-             catch (jade.content.lang.Codec.CodecException | jade.content.onto.OntologyException ce) {
-                   System.out.println(ce);
-            }
-         }
+        }
  
-      @Override
-      public boolean done() {
-        return finished;
-      }
- 
-  } //Fin de la clase WaitPingAndReplyBehaviour
+        @Override
+        public boolean done() {
+            return finished;
+        }
+    }
     
     private String realizarRequest(String modelo, String date) {
         String url;

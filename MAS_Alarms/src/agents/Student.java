@@ -321,6 +321,4 @@ public class Student extends Agent {
             return false;
         }
     }
-    
-    
 }

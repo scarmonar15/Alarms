@@ -46,7 +46,7 @@ public class Teacher extends Agent {
             }
         }
         
-        WaitPingAndReplyBehaviour PingBehaviour = new  WaitPingAndReplyBehaviour(this);
+        RecibirMensajes PingBehaviour = new  RecibirMensajes(this);
         MirarNuevosOAs tickerNuevosOAs = new MirarNuevosOAs(this, 10000);
         MirarNuevasAsesorias tickerNuevasAsesorias = new MirarNuevasAsesorias(this, 10000);
         
@@ -75,9 +75,7 @@ public class Teacher extends Agent {
                 }
             }
             
-            if (oas.isEmpty()) {
-                System.out.println("No hay nuevos objetos de aprendizaje!");
-            } else {
+            if (!oas.isEmpty()){
                 AID r = new AID();
                 r.setLocalName("Estudiante");
 
@@ -121,9 +119,7 @@ public class Teacher extends Agent {
                 } 
             }
             
-            if (asesorias.isEmpty()) {
-                System.out.println("No hay nuevas asesorias!");
-            } else {
+            if (!asesorias.isEmpty()) {
                 AID r = new AID();
                 r.setLocalName("Estudiante");
 
@@ -167,12 +163,10 @@ public class Teacher extends Agent {
         }
     }
     
-    // Clase que describe el comportamiento que permite recibir un mensaje
-    // y contestarlo
-    class WaitPingAndReplyBehaviour extends SimpleBehaviour {
+    class RecibirMensajes extends SimpleBehaviour {
         private boolean finished = false;
  
-        public WaitPingAndReplyBehaviour(Agent a) {
+        public RecibirMensajes(Agent a) {
             super(a);
         }
  
@@ -186,7 +180,6 @@ public class Teacher extends Agent {
             ACLMessage  msg = blockingReceive(mt);
             
             try {
-
                 if(msg == null) {
                     System.out.println("No message received");
                 } else {
@@ -215,7 +208,7 @@ public class Teacher extends Agent {
                                 
                                 doDelete();
                                 new Container().mainMenu();
-                            }else if(ce instanceof EstudiantesCalificados){
+                            } else if (ce instanceof EstudiantesCalificados) {
                                 ACLMessage reply = msg.createReply();
                                 
                                 BufferedReader buff = new BufferedReader(new InputStreamReader(System.in));
@@ -262,46 +255,51 @@ public class Teacher extends Agent {
                                 OAsRecomendados oasr = (OAsRecomendados) ce;
                                 List oas = oasr.getOas();
                         
-                                System.out.println("*********** Se han recomendado los siguientes Objetos de Aprendizaje a estos estudiantes:");
-                        
                                 for (int i = 0; i < oas.size(); i++) {
                                     ObjetoDeAprendizaje oa = (ObjetoDeAprendizaje) oas.get(i);
                                     List estudiantes = oa.getEstudiantes();
-
-                                    System.out.println("*****************************************************************************************");
-                                    System.out.println("Objeto de Aprendizaje #" + oa.getId());
-                                    System.out.println("    Nombre: " + oa.getNombre());
+                                    String asunto, mensaje;
+                                    
+                                    asunto = "Objeto de Aprendizaje recomendado!";
+                            
+                                    mensaje = "Se le ha recomendado el siguiente Objeto de Aprendizaje: \n" +
+                                              "Objeto de Aprendizaje #" + oa.getId() + "\n" +
+                                              "    Nombre: " + oa.getNombre();
 
                                     for (int j = 0; j < estudiantes.size(); j++) {
                                         Estudiante estudiante = (Estudiante) estudiantes.get(j);
-
-                                        System.out.println("    Estudiante con cedula " + estudiante.getCedula());
-                                        System.out.println("        Nombre: " + estudiante.getNombre() + " " + estudiante.getApellido());
-                                        System.out.println("        Correo: " + estudiante.getCorreo());
+                                        
+                                        try {
+                                            SendEmail.generateAndSendEmail(asunto, estudiante.getCorreo(), mensaje);
+                                        } catch (MessagingException ex) {
+                                            Logger.getLogger(Teacher.class.getName()).log(Level.SEVERE, null, ex);
+                                        }
                                     }
                                 }
                             } else if (ce instanceof AsesoriasProgramadas) {
                                 AsesoriasProgramadas ap = (AsesoriasProgramadas) ce;
                                 List asesorias = ap.getAsesorias();
                         
-                                System.out.println("*********** Se han programado las siguientes asesorias para estos estudiantes:");
-                        
                                 for (int i = 0; i < asesorias.size(); i++) {
                                     Asesoria asesoria = (Asesoria) asesorias.get(i);
                                     List estudiantes = asesoria.getEstudiantes();
-
-                                    System.out.println("*****************************************************************************************");
-                                    System.out.println("Asesoria #" + asesoria.getId());
-                                    System.out.println("    Asesor: " + asesoria.getAsesor());
-                                    System.out.println("    Fecha: " + asesoria.getFecha());
-                                    System.out.println("    Salon: " + asesoria.getSalon());
+                                    String asunto, mensaje;
+                                    
+                                    asunto = "Asesoria asignada!";
+                            
+                                    mensaje = "Asesoria #" + asesoria.getId() + "\n" +
+                                              "    Asesor: " + asesoria.getAsesor() + "\n" +
+                                              "    Fecha: " + asesoria.getFecha() + "\n" +
+                                              "    Salon: " + asesoria.getSalon();
 
                                     for (int j = 0; j < estudiantes.size(); j++) {
                                         Estudiante estudiante = (Estudiante) estudiantes.get(j);
-
-                                        System.out.println("    Estudiante con cedula " + estudiante.getCedula());
-                                        System.out.println("        Nombre: " + estudiante.getNombre() + " " + estudiante.getApellido());
-                                        System.out.println("        Correo: " + estudiante.getCorreo());
+                                        
+                                        try {
+                                            SendEmail.generateAndSendEmail(asunto, estudiante.getCorreo(), mensaje);
+                                        } catch (MessagingException ex) {
+                                            Logger.getLogger(Teacher.class.getName()).log(Level.SEVERE, null, ex);
+                                        }
                                     }
                                 }
                             } else {
