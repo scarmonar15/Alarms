@@ -38,8 +38,8 @@ public class Teacher extends Agent {
                 ObtenerAlDenunciado SenderBehaviour = new ObtenerAlDenunciado(this);
                 addBehaviour(SenderBehaviour);
             } else if (args[0].equals("Calificar")) {
-                ObtenerLosCalificados CalificadosBehaviour = new ObtenerLosCalificados(this);
-                addBehaviour(CalificadosBehaviour);
+                CalificarEntrega CalificarBehaviour = new CalificarEntrega(this);
+                addBehaviour(CalificarBehaviour);
             } else if (args[0].equals("SimularFecha")) {
                 DetectarIncumplimiento IncumplimientoBehaviour = new DetectarIncumplimiento(this, (String) args[1]);
                 addBehaviour(IncumplimientoBehaviour);
@@ -143,6 +143,53 @@ public class Teacher extends Agent {
         }
     }
     
+    class CalificarEntrega extends SimpleBehaviour {
+        public CalificarEntrega(Agent a) {
+            super(a);
+        }
+        
+        @Override
+        public boolean done() {
+            return true;
+        }
+        
+        @Override
+        public void action() {
+            AID r = new AID();
+            r.setLocalName("Estudiante");
+            
+            ACLMessage msg = new ACLMessage(ACLMessage.INFORM);
+            msg.setSender(getAID());
+            msg.addReceiver(r);
+            msg.setLanguage(codec.getName());
+            msg.setOntology(ontologia.getName());
+            
+            try {
+                BufferedReader buff = new BufferedReader(new InputStreamReader(System.in));
+                
+                System.out.print("Ingrese el ID de la entrega que quiere calificar: ");
+                         
+                int id_entrega = Integer.parseInt(buff.readLine());
+                
+                System.out.print("Ingrese los IDs de los equipos que quiere calificar (Separados por coma): ");
+                
+                String[] id_equipos = buff.readLine().split(",");
+
+                ObtenerEntregaCalificada oec = new ObtenerEntregaCalificada();
+                oec.setId_entrega(id_entrega);
+                
+                for (String id_equipo : id_equipos) {
+                    oec.addId_equipos(Integer.parseInt(id_equipo));
+                }
+                
+                getContentManager().fillContent(msg, oec);
+                send(msg);
+            } catch (IOException | Codec.CodecException | OntologyException ex) {
+                Logger.getLogger(Teacher.class.getName()).log(Level.SEVERE, null, ex);
+            }
+        }
+    }
+    
     class DetectarIncumplimiento extends SimpleBehaviour {
         private boolean finished = false;
         private String fecha;
@@ -208,46 +255,43 @@ public class Teacher extends Agent {
                                 
                                 doDelete();
                                 new Container().mainMenu();
-                            } else if (ce instanceof EstudiantesCalificados) {
-                                ACLMessage reply = msg.createReply();
-                                
-                                BufferedReader buff = new BufferedReader(new InputStreamReader(System.in));
-                                
-                                System.out.println("Ingrese Entrega que va a calificar");
-                                int entrega = Integer.parseInt(buff.readLine());
-
-                                System.out.println("Ingrese Nota");
-                                float nota = Float.parseFloat(buff.readLine());
-
-                                ObtenerEntregaCalificada oec = new ObtenerEntregaCalificada();
-                                oec.setId_entrega(entrega);
-                                oec.setNota(nota);
-
-                                getContentManager().fillContent(reply, oec);
-                                send(reply);
-
-                                System.out.println("\nHemos registrado su calificación");
-                                
-                                EstudiantesCalificados ec = (EstudiantesCalificados) ce;
-                                
-                                for (int i = 0; i < ec.getEstudiantes().size(); i++) {
-                                    Estudiante e = (Estudiante)ec.getEstudiantes().get(i);
-                                    System.out.println("Hemos registrado una nueva calificación a nombre"
-                                            + " de " + e.getNombre() + " " + e.getApellido()
-                                            + " en la entrega " + entrega
-                                            + " y obtuvo una nota de " + nota
-                                    );
-                                }
                             } else if (ce instanceof EntregaCalificada) {
                                 EntregaCalificada ec = (EntregaCalificada) ce;
-                                Entrega e = ec.getEntrega();
-                                
-                                System.out.println("Entrega recibida");
-                                System.out.println("La entrega recibida tiene los siguientes datos:\n"
-                                        + "ID: " + e.getId()
-                                        + "\nFecha: " + e.getFecha()
-                                        + "\nEnunciado: " + e.getEnunciado() + "\n"
-                                );
+                                Entrega entrega = ec.getEntrega();
+                                Proyecto proyecto = entrega.getProyecto();
+                                List equipos = entrega.getEquipos();
+                                BufferedReader buff = new BufferedReader(new InputStreamReader(System.in));
+                        
+                                for (int i = 0; i < equipos.size(); i++) {
+                                    Equipo equipo = (Equipo) equipos.get(i);
+                                    List estudiantes = equipo.getEstudiantes();
+                                    String asunto, mensaje;
+                                    float nota;
+                                    
+                                    System.out.print("Ingrese la nota de la Entrega #" + entrega.getId() + " para el Equipo #" + equipo.getId() + ": ");
+                                    nota = Float.parseFloat(buff.readLine());
+                                    
+                                    //TODO Realizar POST a teams_assignments con la nota
+                                    
+                                    asunto = "Entrega \"" + entrega.getEnunciado() + "\" calificada!";
+                            
+                                    mensaje = "Entrega #" + entrega.getId() + "\n" +
+                                              "    ID Proyecto: " + proyecto.getId() + "\n" +
+                                              "    Titulo del Proyecto: " + proyecto.getTitulo() + "\n" +
+                                              "    Enunciado: " + entrega.getEnunciado() + "\n" +
+                                              "    Fecha limite: " + entrega.getFecha() + "\n" +
+                                              "    Nota: " + nota;
+                                    
+                                    for (int j = 0; j < estudiantes.size(); j++) {
+                                        Estudiante estudiante = (Estudiante) estudiantes.get(j);
+                                        
+                                        try {
+                                            SendEmail.generateAndSendEmail(asunto, estudiante.getCorreo(), mensaje);
+                                        } catch (MessagingException ex) {
+                                            Logger.getLogger(Teacher.class.getName()).log(Level.SEVERE, null, ex);
+                                        }
+                                    }
+                                }
                                 
                                 doDelete();
                                 new Container().mainMenu();
@@ -334,46 +378,7 @@ public class Teacher extends Agent {
             return finished;
         }
     }
-    class ObtenerLosCalificados extends SimpleBehaviour{
-        public ObtenerLosCalificados(Agent a){
-            super(a);
-        }
-        @Override
-        public boolean done(){
-            return true;
-        }
-        @Override
-        public void action(){
-            AID r = new AID();
-            r.setLocalName("Estudiante");
-            
-            ACLMessage msg = new ACLMessage(ACLMessage.INFORM);
-            msg.setSender(getAID());
-            msg.addReceiver(r);
-            msg.setLanguage(codec.getName());
-            msg.setOntology(ontologia.getName());
-            try {
-                System.out.println("Ingrese cédula de estudiantes que quiere calificar (separados por coma)");
-                BufferedReader buff = new BufferedReader(new InputStreamReader(System.in));           
-                String[] grupo_de_estudiantes = buff.readLine().toString().split(",");
 
-                ObtenerEstudiantesCalificados oec = new ObtenerEstudiantesCalificados();
-                for (String id_estudiante : grupo_de_estudiantes) {
-                    oec.addId_estudiantes(id_estudiante);
-                }
-                
-                getContentManager().fillContent(msg, oec);
-                send(msg);
-            }catch (IOException ex) {
-                Logger.getLogger(Teacher.class.getName()).log(Level.SEVERE, null, ex);
-            } catch (Codec.CodecException ex) {
-                Logger.getLogger(Teacher.class.getName()).log(Level.SEVERE, null, ex);
-            } catch (OntologyException ex) {
-                Logger.getLogger(Teacher.class.getName()).log(Level.SEVERE, null, ex);
-            }
-           
-        }
-    }
     class ObtenerAlDenunciado extends SimpleBehaviour{
         private boolean finished = false;
         

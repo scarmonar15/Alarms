@@ -166,21 +166,6 @@ public class Student extends Agent {
                                 send(reply);
                                 
                                 System.out.println("Enviando información básica del denunciado al Agente Profesor");
-                            } else if (ce instanceof ObtenerEstudiantesCalificados){
-                                ACLMessage reply = msg.createReply();
-                                
-                                ObtenerEstudiantesCalificados predicado = (ObtenerEstudiantesCalificados)ce;
-                                List estudiantes =  predicado.getId_estudiantes();
-                                EstudiantesCalificados ec = new EstudiantesCalificados();
-                                
-                                for (int i = 0; i < estudiantes.size(); i++){
-                                    String response = realizarRequest("students", estudiantes.get(i).toString());
-                                    Estudiante e = new Estudiante(response);
-                                    ec.addEstudiantes(e);
-                                }
-                                
-                                getContentManager().fillContent(reply, ec);
-                                send(reply);
                             } else if (ce instanceof ObtenerEntregaCalificada) {
                                 ACLMessage reply = msg.createReply();
                                 
@@ -189,11 +174,10 @@ public class Student extends Agent {
                                 //Request
                                 String response = realizarRequest("info_assignment", String.valueOf(predicado.getId_entrega()));
                                 
-                                EntregaCalificada ec = new EntregaCalificada();
                                 Entrega e = new Entrega(response);
                                 
+                                EntregaCalificada ec = new EntregaCalificada();
                                 ec.setEntrega(e);
-                                ec.setNota(predicado.getNota());
                                 
                                 getContentManager().fillContent(reply, ec);
                                 send(reply);
