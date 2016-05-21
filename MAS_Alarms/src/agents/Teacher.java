@@ -13,6 +13,7 @@ import jade.util.leap.List;
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStreamReader;
+import java.io.OutputStreamWriter;
 import java.net.HttpURLConnection;
 import java.net.URL;
 import java.util.logging.Level;
@@ -63,7 +64,7 @@ public class Teacher extends Agent {
         @Override
         public void onTick(){
             //REQUEST
-            String response = realizarRequest("learnings");
+            String response = realizarRequest("GET", "learnings", null);
             
             response = response.substring(1, response.length() - 1);
             String[] aux_array = response.split(",");
@@ -107,7 +108,7 @@ public class Teacher extends Agent {
         @Override
         public void onTick(){
             //REQUEST
-            String response = realizarRequest("counselings");
+            String response = realizarRequest("GET", "counselings", null);
             
             response = response.substring(1, response.length() - 1);
             String[] aux_array = response.split(",");
@@ -272,6 +273,11 @@ public class Teacher extends Agent {
                                     nota = Float.parseFloat(buff.readLine());
                                     
                                     //TODO Realizar POST a teams_assignments con la nota
+                                    String[] opciones_request = new String[2];
+                                    opciones_request[0] = String.valueOf(entrega.getId());
+                                    opciones_request[1] = "{'grade': '" + nota + "'}";
+                                    
+                                    realizarRequest("PUT", "assignments", opciones_request);
                                     
                                     asunto = "Entrega \"" + entrega.getEnunciado() + "\" calificada!";
                             
@@ -285,11 +291,11 @@ public class Teacher extends Agent {
                                     for (int j = 0; j < estudiantes.size(); j++) {
                                         Estudiante estudiante = (Estudiante) estudiantes.get(j);
                                         
-                                        try {
+                                        /*try {
                                             SendEmail.generateAndSendEmail(asunto, estudiante.getCorreo(), mensaje);
                                         } catch (MessagingException ex) {
                                             Logger.getLogger(Teacher.class.getName()).log(Level.SEVERE, null, ex);
-                                        }
+                                        }*/
                                     }
                                 }
                                 
@@ -421,34 +427,48 @@ public class Teacher extends Agent {
         }
     }
     
-    private String realizarRequest(String modelo) {
-        String url = "http://apimasalarms.herokuapp.com/" + modelo + "/index/differences";
+    private String realizarRequest(String method, String model, String[] args) {
+        String url = "";
+        
+        if (method.equals("GET")) {
+            url = "http://apimasalarms.herokuapp.com/" + model + "/index/differences";
+        } else if (method.equals("PUT")) {
+            url = "http://apimasalarms.herokuapp.com/" + model + "/" + args[0];
+        }
+        
         StringBuilder response = new StringBuilder();
         
         try {
             URL url_object = new URL(url);
             HttpURLConnection con = (HttpURLConnection) url_object.openConnection();
 
-            // optional default is GET
-            con.setRequestMethod("GET");
-            //add request header
+            con.setRequestMethod(method);
             con.setRequestProperty("User-Agent", USER_AGENT);
 
-            int responseCode = con.getResponseCode();
-            //System.out.println("\nSending 'GET' request to URL : " + url);
-            //System.out.println("Response Code : " + responseCode);
+            if (method.equals("GET")) {
+                BufferedReader in = new BufferedReader(
+                    new InputStreamReader(con.getInputStream())
+                );
 
-            BufferedReader in = new BufferedReader(
-                new InputStreamReader(con.getInputStream())
-            );
+                String inputLine;
 
-            String inputLine;
-            
-            while ((inputLine = in.readLine()) != null) {
-                response.append(inputLine);
-            }
+                while ((inputLine = in.readLine()) != null) {
+                    response.append(inputLine);
+                }
 
-            in.close();
+                in.close();
+            } else {
+                con.setDoOutput(true);
+                
+                OutputStreamWriter out = new OutputStreamWriter(
+                    con.getOutputStream()
+                );
+                
+                out.write(args[1]);
+                out.close();
+                
+                con.getInputStream();
+            }  
         } catch (Exception e) {
             e.printStackTrace();
         }
