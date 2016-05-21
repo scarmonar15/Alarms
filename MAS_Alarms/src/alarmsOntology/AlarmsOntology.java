@@ -9,7 +9,7 @@ import jade.core.CaseInsensitiveString;
 
 /** file: AlarmsOntology.java
  * @author ontology bean generator
- * @version 2016/05/20, 16:21:52
+ * @version 2016/05/20, 20:23:14
  */
 public class AlarmsOntology extends jade.content.onto.Ontology  {
   //NAME
@@ -83,6 +83,7 @@ public class AlarmsOntology extends jade.content.onto.Ontology  {
     public static final String ESTUDIANTE="Estudiante";
     public static final String TAREA_DESCRIPCION="descripcion";
     public static final String TAREA_ID="id";
+    public static final String TAREA_ESTUDIANTES="estudiantes";
     public static final String TAREA_ENTREGA="entrega";
     public static final String TAREA="Tarea";
     public static final String EQUIPO_ID="id";
@@ -151,6 +152,7 @@ public class AlarmsOntology extends jade.content.onto.Ontology  {
     equipoSchema.add(EQUIPO_ESTUDIANTES, estudianteSchema, 0, ObjectSchema.UNLIMITED);
     equipoSchema.add(EQUIPO_ID, (TermSchema)getSchema(BasicOntology.INTEGER), ObjectSchema.MANDATORY);
     tareaSchema.add(TAREA_ENTREGA, entregaSchema, ObjectSchema.MANDATORY);
+    tareaSchema.add(TAREA_ESTUDIANTES, estudianteSchema, 0, ObjectSchema.UNLIMITED);
     tareaSchema.add(TAREA_ID, (TermSchema)getSchema(BasicOntology.INTEGER), ObjectSchema.MANDATORY);
     tareaSchema.add(TAREA_DESCRIPCION, (TermSchema)getSchema(BasicOntology.STRING), ObjectSchema.MANDATORY);
     estudianteSchema.add(ESTUDIANTE_APELLIDO, (TermSchema)getSchema(BasicOntology.STRING), ObjectSchema.MANDATORY);

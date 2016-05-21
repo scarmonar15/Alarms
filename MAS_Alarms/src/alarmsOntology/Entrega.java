@@ -58,6 +58,18 @@ public class Entrega implements Concept {
         
         setEquipos(nuevos_equipos);
     }
+    
+    public Entrega(JsonElement json_element) {
+        JsonObject json_object = json_element.getAsJsonObject();
+        
+        setId(Integer.parseInt(json_object.get("id").getAsString()));
+        setFecha(json_object.get("limit_date").getAsString());
+        setEnunciado(json_object.get("description").getAsString());
+        
+        JsonObject project = json_object.get("project").getAsJsonObject();
+        Proyecto proyecto = new Proyecto(project);
+        setProyecto(proyecto);
+    }
    /**
 * Protege name: tareas
    */

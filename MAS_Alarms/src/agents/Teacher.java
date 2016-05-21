@@ -1,6 +1,9 @@
 package agents;
 
 import alarmsOntology.*;
+import com.google.gson.JsonArray;
+import com.google.gson.JsonObject;
+import com.google.gson.JsonParser;
 import jade.core.*;
 import jade.core.behaviours.*;
 import jade.lang.acl.*;
@@ -202,7 +205,61 @@ public class Teacher extends Agent {
         
         @Override
         public void action() {
+            String[] opciones_request = new String[1];
+            opciones_request[0] = this.fecha;
             
+            String response = realizarRequest("GET", "assignments_date", opciones_request);
+
+            JsonArray tareas = new JsonParser().parse(response).getAsJsonArray();
+            
+            if (tareas.size() > 0) {
+                String mensaje, asunto;
+            
+                for (int i = 0; i < tareas.size(); i++) {
+                    JsonObject tarea_object = tareas.get(i).getAsJsonObject();
+                    Tarea tarea = new Tarea(tarea_object);
+                    Entrega entrega = tarea.getEntrega();
+                    Proyecto proyecto = entrega.getProyecto();
+                    List estudiantes = tarea.getEstudiantes();
+                    
+                    asunto = "Denuncia por incumplimiento en la Tarea #" + entrega.getId();
+                            
+                    mensaje = "Se ha generado una Denuncia automatica para los siguientes Estudiantes por el incumplimiento de la Tarea #" + tarea.getId() + ": \n" +
+                              "Tarea #" + tarea.getId() + "\n" +
+                              "    Proyecto asociado: \n" + 
+                              "        ID: " + proyecto.getId() + "\n" +
+                              "        Titulo: " + proyecto.getTitulo() + "\n" +
+                              "    Entrega asociada: \n" +
+                              "        ID: " + entrega.getId() + "\n" +
+                              "        Enunciado: " + entrega.getEnunciado() + "\n" +
+                              "    Descripcion: " + tarea.getDescripcion() + "\n" +
+                              "    Fecha limite: " + entrega.getFecha() + "\n" +
+                              "    Lista de Estudiantes: \n";
+                            
+                    for (int j = 0; j < estudiantes.size(); j++) {
+                        Estudiante estudiante = (Estudiante) estudiantes.get(j);
+                        
+                        mensaje += "        Estudiante con cedula " + estudiante.getCedula() + "\n" +
+                                   "            Nombre: " + estudiante.getNombre() + " " + estudiante.getApellido() +
+                                   "            Correo: " + estudiante.getCorreo();
+                    }
+                    
+                    /*try {
+                            SendEmail.generateAndSendEmail(asunto, profesor.getCorreo(), mensaje);
+                    } catch (MessagingException ex) {
+                            Logger.getLogger(Team.class.getName()).log(Level.SEVERE, null, ex);
+                    }*/
+                }
+            } else {
+                System.out.println("No hay tareas para este día!");
+            }
+            
+            doDelete();
+            try {
+                new Container().mainMenu();
+            } catch (IOException ex) {
+                Logger.getLogger(Team.class.getName()).log(Level.SEVERE, null, ex);
+            }
         }
         
         @Override
