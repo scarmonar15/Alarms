@@ -234,8 +234,7 @@ public class Student extends Agent {
                                 }
                                 
                                 EstudiantesDelEquipoAlterado ede = new EstudiantesDelEquipoAlterado();
-                                ede.setEquipos(equipos);
-                                
+                                ede.setEquipos(equipos);;
                                 getContentManager().fillContent(reply, ede);
                                 send(reply);
                             } else if (ce instanceof ObtenerObjetosDeAprendizaje) {

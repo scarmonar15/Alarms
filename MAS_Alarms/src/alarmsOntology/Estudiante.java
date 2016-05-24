@@ -8,10 +8,10 @@ import jade.content.*;
 /**
 * Protege name: Estudiante
 * @author ontology bean generator
-* @version 2016/05/16, 18:07:43
+* @version 2016/05/24, 01:01:21
 */
 public class Estudiante implements Concept {
-
+    
     public Estudiante() {}
     
     public Estudiante(String json_doc) {
@@ -29,6 +29,15 @@ public class Estudiante implements Concept {
         setApellido(json_object.get("last_name").getAsString());
         setCorreo(json_object.get("email").getAsString());
     }
+    
+    public Estudiante(JsonObject json_object, String performance) {        
+        setCedula(json_object.get("id").getAsString());
+        setNombre(json_object.get("name").getAsString());
+        setApellido(json_object.get("last_name").getAsString());
+        setCorreo(json_object.get("email").getAsString());
+        setDesempeno(json_object.get("performance").getAsString());
+    }
+
    /**
 * Protege name: apellido
    */
@@ -60,6 +69,17 @@ public class Estudiante implements Concept {
    }
    public Equipo getEquipo() {
      return this.equipo;
+   }
+
+   /**
+* Protege name: desempeno
+   */
+   private String desempeno;
+   public void setDesempeno(String value) { 
+    this.desempeno=value;
+   }
+   public String getDesempeno() {
+     return this.desempeno;
    }
 
    /**

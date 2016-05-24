@@ -26,7 +26,7 @@ public class Equipo implements Concept {
         List est = new ArrayList();
         
         for (JsonElement student : students_array) {
-            Estudiante stud = new Estudiante(student.getAsJsonObject());
+            Estudiante stud = new Estudiante(student.getAsJsonObject(), "");
             est.add(stud);
         }
         

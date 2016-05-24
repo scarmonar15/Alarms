@@ -51,9 +51,9 @@ public class Team extends Agent {
         MirarNuevasEntregas tickerEntregas = new MirarNuevasEntregas(this, 5000);
         MirarNuevosEquipos tickerNuevosEquipos = new MirarNuevosEquipos(this, 5000);
         
-        //addBehaviour(tbf.wrap(tickerProyectos));
-        //addBehaviour(tbf.wrap(tickerEntregas));
-        //addBehaviour(tbf.wrap(tickerNuevosEquipos));
+        addBehaviour(tbf.wrap(tickerProyectos));
+        addBehaviour(tbf.wrap(tickerEntregas));
+        addBehaviour(tbf.wrap(tickerNuevosEquipos));
         addBehaviour(PingBehaviour);
     }
     
@@ -292,22 +292,28 @@ public class Team extends Agent {
                                     String asunto, mensaje;
                                     
                                     asunto = "Ha sido asignado al Equipo #" + equipo.getId() + "!";
-                            
-                                    mensaje = "Se le ha asignado el Equipo #" + equipo.getId() + "con los siguientes compañeros: \n";
                                     
                                     for (int j = 0; j < estudiantes.size(); j++) {
+                                        Estudiante estudiante = (Estudiante) estudiantes.get(j);
+                                        
+                                        mensaje = "Se le ha asignado el Equipo #" + equipo.getId() + " con los siguientes compañeros: \n";
+                                        
                                         for (int k = 0; k < estudiantes.size(); k++) {
+                                            Estudiante aux_est = (Estudiante) estudiantes.get(k);
+                                            
                                             if (j != k) {
-                                                Estudiante estudiante = (Estudiante) estudiantes.get(k);
-                                                
-                                                mensaje += "    Estudiante con cedula " + estudiante.getCedula() + "\n" +
-                                                           "        Nombre: " + estudiante.getNombre() + " " + estudiante.getApellido() + "\n" +
-                                                           "        Correo: " + estudiante.getCorreo() + "\n" +
-                                                           "        Desempeño historico: ";
+                                                mensaje += "    Estudiante con cedula " + aux_est.getCedula() + "\n" +
+                                                           "        Nombre: " + aux_est.getNombre() + " " + aux_est.getApellido() + "\n" +
+                                                           "        Correo: " + aux_est.getCorreo() + "\n" +
+                                                           "        Desempeño historico: " + aux_est.getDesempeno() + "\n";
                                             }
                                         }
                                         
-                                        
+                                        try {
+                                            SendEmail.generateAndSendEmail(asunto, estudiante.getCorreo(), mensaje);
+                                        } catch (MessagingException ex) {
+                                            Logger.getLogger(Team.class.getName()).log(Level.SEVERE, null, ex);
+                                        }
                                     }
                                 }
                             } else if (ce instanceof EstudiantesDelProyecto){

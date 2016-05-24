@@ -1,6 +1,7 @@
 package alarmsOntology;
 
 
+import com.google.gson.JsonArray;
 import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
 import jade.content.*;
@@ -22,6 +23,16 @@ public class Tarea implements Concept {
         JsonElement assignment = json_object.get("assignment");
         Entrega entrega = new Entrega(assignment);
         setEntrega(entrega);
+        
+        JsonArray students_array = json_object.get("students").getAsJsonArray();
+        List est = new ArrayList();
+        
+        for (JsonElement student : students_array) {
+            Estudiante stud = new Estudiante(student.getAsJsonObject());
+            est.add(stud);
+        }
+        
+        setEstudiantes(est);
     }
    /**
 * Protege name: entrega

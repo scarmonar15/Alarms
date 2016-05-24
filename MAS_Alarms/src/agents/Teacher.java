@@ -54,8 +54,8 @@ public class Teacher extends Agent {
         MirarNuevosOAs tickerNuevosOAs = new MirarNuevosOAs(this, 10000);
         MirarNuevasAsesorias tickerNuevasAsesorias = new MirarNuevasAsesorias(this, 10000);
         
-        //addBehaviour(tbf.wrap(tickerNuevosOAs));
-        //addBehaviour(tbf.wrap(tickerNuevasAsesorias));
+        addBehaviour(tbf.wrap(tickerNuevosOAs));
+        addBehaviour(tbf.wrap(tickerNuevasAsesorias));
         addBehaviour(PingBehaviour);
     }
     
@@ -226,7 +226,7 @@ public class Teacher extends Agent {
                     Proyecto proyecto = entrega.getProyecto();
                     List estudiantes = tarea.getEstudiantes();
                     
-                    asunto = "Denuncia por incumplimiento en la Tarea #" + entrega.getId();
+                    asunto = "Denuncia por incumplimiento en la Tarea #" + tarea.getId();
                             
                     mensaje = "Se ha generado una Denuncia automatica para los siguientes Estudiantes por el incumplimiento de la Tarea #" + tarea.getId() + ": \n" +
                               "Tarea #" + tarea.getId() + "\n" +
@@ -248,11 +248,11 @@ public class Teacher extends Agent {
                                    "            Correo: " + estudiante.getCorreo();
                     }
                     
-                    /*try {
-                            SendEmail.generateAndSendEmail(asunto, profesor.getCorreo(), mensaje);
+                    try {
+                            SendEmail.generateAndSendEmail(asunto, "scarmonar@unal.edu.co", mensaje);
                     } catch (MessagingException ex) {
                             Logger.getLogger(Team.class.getName()).log(Level.SEVERE, null, ex);
-                    }*/
+                    }
                 }
             } else {
                 System.out.println("No hay tareas para este día!");
@@ -326,13 +326,6 @@ public class Teacher extends Agent {
                                     System.out.print("Ingrese la nota de la Entrega #" + entrega.getId() + " para el Equipo #" + equipo.getId() + ": ");
                                     nota = Float.parseFloat(buff.readLine());
                                     
-                                    //TODO Realizar POST a teams_assignments con la nota
-                                    String[] opciones_request = new String[2];
-                                    opciones_request[0] = String.valueOf(entrega.getId());
-                                    opciones_request[1] = "{'grade': '" + nota + "'}";
-                                    
-                                    realizarRequest("PUT", "assignments", opciones_request);
-                                    
                                     asunto = "Entrega \"" + entrega.getEnunciado() + "\" calificada!";
                             
                                     mensaje = "Entrega #" + entrega.getId() + "\n" +
@@ -345,11 +338,11 @@ public class Teacher extends Agent {
                                     for (int j = 0; j < estudiantes.size(); j++) {
                                         Estudiante estudiante = (Estudiante) estudiantes.get(j);
                                         
-                                        /*try {
+                                        try {
                                             SendEmail.generateAndSendEmail(asunto, estudiante.getCorreo(), mensaje);
                                         } catch (MessagingException ex) {
                                             Logger.getLogger(Teacher.class.getName()).log(Level.SEVERE, null, ex);
-                                        }*/
+                                        }
                                     }
                                 }
                                 
