@@ -67,7 +67,9 @@ public class Teacher extends Agent {
         @Override
         public void onTick(){
             //REQUEST
-            String response = realizarRequest("GET", "learnings", null);
+            String[] opciones_request = new String[1];
+            opciones_request[0] = "differences";
+            String response = realizarRequest("GET", "learnings", opciones_request);
             
             response = response.substring(1, response.length() - 1);
             String[] aux_array = response.split(",");
@@ -111,7 +113,9 @@ public class Teacher extends Agent {
         @Override
         public void onTick(){
             //REQUEST
-            String response = realizarRequest("GET", "counselings", null);
+            String[] opciones_request = new String[1];
+            opciones_request[0] = "differences";
+            String response = realizarRequest("GET", "counselings", opciones_request);
             
             response = response.substring(1, response.length() - 1);
             String[] aux_array = response.split(",");
@@ -206,9 +210,9 @@ public class Teacher extends Agent {
         @Override
         public void action() {
             String[] opciones_request = new String[1];
-            opciones_request[0] = this.fecha;
+            opciones_request[0] = "delay?d=" + this.fecha;
             
-            String response = realizarRequest("GET", "assignments_date", opciones_request);
+            String response = realizarRequest("GET", "tasks", opciones_request);
 
             JsonArray tareas = new JsonParser().parse(response).getAsJsonArray();
             
@@ -252,13 +256,6 @@ public class Teacher extends Agent {
                 }
             } else {
                 System.out.println("No hay tareas para este día!");
-            }
-            
-            doDelete();
-            try {
-                new Container().mainMenu();
-            } catch (IOException ex) {
-                Logger.getLogger(Team.class.getName()).log(Level.SEVERE, null, ex);
             }
         }
         
@@ -488,7 +485,7 @@ public class Teacher extends Agent {
         String url = "";
         
         if (method.equals("GET")) {
-            url = "http://apimasalarms.herokuapp.com/" + model + "/index/differences";
+            url = "http://apimasalarms.herokuapp.com/" + model + "/index/" + args[0];
         } else if (method.equals("PUT")) {
             url = "http://apimasalarms.herokuapp.com/" + model + "/" + args[0];
         }

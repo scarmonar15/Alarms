@@ -41,8 +41,6 @@ public class Team extends Agent {
 
         if (args != null) {
             if (args[0].equals("SimularFecha")) {
-                System.out.println("Simulando Fecha en Equipo");
-                
                 PlazoEntregaCumplido pec = new PlazoEntregaCumplido(this, (String) args[1]);
                 addBehaviour(pec);
             }
@@ -216,7 +214,7 @@ public class Team extends Agent {
                     
                     asunto = "Llegada de fecha limite para la Entrega #" + entrega.getId();
                             
-                    mensaje = "Ha llegado la fecha limite para la siguientes entrega: \n" +
+                    mensaje = "Ha llegado la fecha limite para la siguiente entrega: \n" +
                               "Entrega #" + entrega.getId() + "\n" +
                               "    ID Proyecto: " + proyecto.getId() + "\n" +
                               "    Titulo del Proyecto: " + proyecto.getTitulo() + "\n" +
@@ -288,21 +286,28 @@ public class Team extends Agent {
                                 EstudiantesDelEquipoAlterado edea = (EstudiantesDelEquipoAlterado) ce;
                                 List equipos = edea.getEquipos();
                                 
-                                System.out.println("*********** Se han agregado los siguientes nuevos equipos:");
-                                
                                 for (int i = 0; i < equipos.size(); i++) {
                                     Equipo equipo = (Equipo) equipos.get(i);
                                     List estudiantes = equipo.getEstudiantes();
+                                    String asunto, mensaje;
                                     
-                                    System.out.println("************************************************************");
-                                    System.out.println("Equipo #" + equipo.getId());
+                                    asunto = "Ha sido asignado al Equipo #" + equipo.getId() + "!";
+                            
+                                    mensaje = "Se le ha asignado el Equipo #" + equipo.getId() + "con los siguientes compañeros: \n";
                                     
                                     for (int j = 0; j < estudiantes.size(); j++) {
-                                        Estudiante estudiante = (Estudiante) estudiantes.get(j);
+                                        for (int k = 0; k < estudiantes.size(); k++) {
+                                            if (j != k) {
+                                                Estudiante estudiante = (Estudiante) estudiantes.get(k);
+                                                
+                                                mensaje += "    Estudiante con cedula " + estudiante.getCedula() + "\n" +
+                                                           "        Nombre: " + estudiante.getNombre() + " " + estudiante.getApellido() + "\n" +
+                                                           "        Correo: " + estudiante.getCorreo() + "\n" +
+                                                           "        Desempeño historico: ";
+                                            }
+                                        }
                                         
-                                        System.out.println("    Estudiante con cedula " + estudiante.getCedula());
-                                        System.out.println("        Nombre: " + estudiante.getNombre() + " " + estudiante.getApellido());
-                                        System.out.println("        Correo: " + estudiante.getCorreo());
+                                        
                                     }
                                 }
                             } else if (ce instanceof EstudiantesDelProyecto){
